@@ -1,89 +1,59 @@
-import { StatusBar } from "expo-status-bar"; 
-import React, { useState } from "react"; 
-import { Button, SafeAreaView, StyleSheet, Modal, 
-		View, TextInput, Dimensions } from "react-native"; 
+import React ,{ useState, useEffect }  from 'react';
+import { withTheme, Modal, Portal, Text, Button, Provider, TextInput} from 'react-native-paper';
 
-const { width } = Dimensions.get("window"); 
+const InputModal = (props) => {
+  const [visible, setVisible] = useState(false);
+  const [currentItem, setCurrentItem] = useState(null);
+  const [note, setNote] = useState('');
+  const theme = props.theme
+  
+ 	useEffect(() => {
+		setCurrentItem(props.item)
+		if(props.item && props.item.isPresent) {
+			hideModal()
+		} else {
+			showModal()
+		}
 
-export default function InputModal() { 
-	
-	// This is to manage Modal State 
-	const [isModalVisible, setModalVisible] = useState(false); 
+	}, [props.item])
 
-	// This is to manage TextInput State 
-	const [inputValue, setInputValue] = useState(""); 
+	useEffect( () => {
+		if(!currentItem) {
+			hideModal()
+		}
+	}, [currentItem])
 
-	// Create toggleModalVisibility function that will 
-	// Open and close modal upon button clicks. 
-	const toggleModalVisibility = () => { 
-		setModalVisible(!isModalVisible); 
-	}; 
 
-	return ( 
-		<SafeAreaView style={styles.screen}> 
-			<StatusBar style="auto" /> 
+  const showModal = () => setVisible(true);
+  const hideModal = () => {
+	  	setVisible(false)
+		setCurrentItem(null)
+	};
+  const containerStyle = {backgroundColor: 'white', padding: 20};
 
-			{/** We are going to create a Modal with Text Input. */} 
-			<Button title="Show Modal" onPress={toggleModalVisibility} /> 
+  return (
+    <Provider>
+      <Portal>
+        <Modal visible={visible} contentContainerStyle={containerStyle}>
+          	<Text>Example Modal.  Click outside this area to dismiss.</Text>
+		  	<TextInput
+				label="Note"
+				value={note}
+				multiline={true}
+				onChangeText={note => setNote(note)}/>
+			<Button 
+				icon="camera" 
+				mode="contained" 
+				color={theme.colors.primary}
+				onPress={hideModal}>Save</Button>
 
-			{/** This is our modal component containing textinput and a button */} 
-			<Modal 
-        animationType="slide"
-				transparent visible={isModalVisible} 
-				presentationStyle="overFullScreen"
-				onDismiss={toggleModalVisibility}> 
-				<View style={styles.viewWrapper}> 
-					<View style={styles.modalView}> 
-						<TextInput 
-              placeholder="Enter Text..."
-              value={inputValue} 
-              style={styles.textInput} 
-              onChangeText={(value) => setInputValue(value)} /> 
+        </Modal>
+      </Portal>
+      <Button style={{marginTop: 30}} onPress={showModal}>
+        Show
+      </Button>
+    </Provider>
+  );
+};
 
-						{/** This button is responsible to close the modal */} 
-						<Button title="Close" onPress={toggleModalVisibility} /> 
-					</View> 
-				</View> 
-			</Modal> 
-		</SafeAreaView> 
-	); 
-} 
-
-// These are user defined styles 
-const styles = StyleSheet.create({ 
-	screen: { 
-		flex: 1, 
-		alignItems: "center", 
-		justifyContent: "center", 
-		backgroundColor: "#fff", 
-	}, 
-	viewWrapper: { 
-		flex: 1, 
-		alignItems: "center", 
-		justifyContent: "center", 
-		backgroundColor: "rgba(0, 0, 0, 0.2)", 
-	}, 
-	modalView: { 
-		alignItems: "center", 
-		justifyContent: "center", 
-		position: "absolute", 
-		top: "50%", 
-		left: "50%", 
-		elevation: 5, 
-		transform: [{ translateX: -(width * 0.4) }, 
-					{ translateY: -90 }], 
-		height: 180, 
-		width: width * 0.8, 
-		backgroundColor: "#fff", 
-		borderRadius: 7, 
-	}, 
-	textInput: { 
-		width: "80%", 
-		borderRadius: 5, 
-		paddingVertical: 8, 
-		paddingHorizontal: 16, 
-		borderColor: "rgba(0, 0, 0, 0.2)", 
-		borderWidth: 1, 
-		marginBottom: 8, 
-	}, 
-});
+export default withTheme(InputModal);

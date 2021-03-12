@@ -16,10 +16,13 @@ const theme = {
   roundness: 2,
   colors: {
     ...DefaultTheme.colors,
-    primary: '#3498db',
+    primary: '#54C7EC',
     accent: '#f1c40f',
-    green: '#5AF953',
-    red: '#F95038'
+    darkBlue: '#05627f',
+    green: '#00C171',
+    darkGreen: '#035835',
+    red: '#F2453A',
+    darkRed: '#a50404'
   },
 };
 

@@ -9,7 +9,10 @@ const initState = {
     fetchStudents: false,
     fetchStudentsResponse: null,
     fetchStudentsError: null,
-    currentAttendance: null
+    currentAttendance: null,
+    submitAttendance: false,
+    submitAttendanceResponse: null,
+    submitAttendanceError: null,
 }
 
 
@@ -63,6 +66,23 @@ export default function attendanceReducer( state = initState, action) {
             return {
                 ...state,
                 currentAttendance: action.attendanceData
+            }
+        case types.SUBMIT_ATTENDANCE_REQUEST:
+            return {
+                ...state,
+                submitAttendance: true
+            }
+        case types.SUBMIT_ATTENDANCE_REQUEST_SUCCESS:
+            return {
+                ...state,
+                submitAttendanceResponse: action.response,
+                submitAttendance: false
+            }
+        case types.SUBMIT_ATTENDANCE_REQUEST_ERROR: 
+            return {
+                ...state,
+                submitAttendanceError: action.error,
+                submitAttendance: false
             }
         default: 
             return state

@@ -5,7 +5,8 @@ import {
     setClassName,
     setAttendanceDateTime,
     getStudents,
-    setClassAttendance
+    setClassAttendance,
+    saveAttendance
 } from '../actions'
 import Presence from '../../../features/attendance/presence'
 
@@ -19,7 +20,10 @@ const mapStateToProps = state => {
         fetchStudents: state.attendanceReducer.fetchStudents,
         fetchStudentsResponse: state.attendanceReducer.fetchStudentsResponse,
         fetchStudentsError: state.attendanceReducer.fetchStudentsError,
-        currentAttendance: state.attendanceReducer.currentAttendance
+        currentAttendance: state.attendanceReducer.currentAttendance,
+        submitAttendance: state.attendanceReducer.submitAttendance,
+        submitAttendanceResponse: state.attendanceReducer.submitAttendanceResponse,
+        submitAttendanceError: state.attendanceReducer.submitAttendanceError
     }
 }
 
@@ -29,7 +33,8 @@ const mapDispatchToProps = dispatch =>
         setClassName,
         setAttendanceDateTime,
         getStudents,
-        setClassAttendance
+        setClassAttendance,
+        saveAttendance
     }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(Presence)

@@ -1,5 +1,5 @@
 import http from './http'
-import { getClassesUrl, getStudentsUrl } from './apiUrl'
+import { getClassesUrl, getStudentsUrl, submitAttendanceUrl } from './apiUrl'
 
 export const getClasses = () => {
     const classes = [{
@@ -40,7 +40,7 @@ export const getStudents = (className) => {
 
 export const submitAttendance = (data) => {
     return new Promise((resolve, reject) => {
-        return http.post(sumitAttendanceUrl)
+        return http.post(submitAttendanceUrl, data)
         .then(response => resolve(response))
         .catch(error => reject(error))
     })
