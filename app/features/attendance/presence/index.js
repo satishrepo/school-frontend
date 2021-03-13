@@ -1,13 +1,16 @@
 import React, { useState, useEffect, useLayoutEffect } from 'react';
-import { StyleSheet, Text, View, FlatList, TouchableOpacity, Button } from 'react-native';
-import InputModal from '../../../components/inputModal'
-import { Card, Title, Paragraph, withTheme, Avatar, Chip } from 'react-native-paper';
+import { StyleSheet, Text, View, ScrollView, FlatList, TouchableOpacity, Button, Pressable } from 'react-native';
+import InputModal from './inputModal'
+import { 
+    Card, Title, Paragraph, withTheme, Avatar, Chip, IconButton, Colors
+} from 'react-native-paper';
 import { toTitleCase } from '../../../libs/helper'
 
 
-const Item = ({item, onPress, backgroundColor}) => {
+const Item = ({item, onPress, backgroundColor, showAbsentReason, disabled}) => {
     return (
-        <TouchableOpacity 
+        <Pressable 
+            disabled={disabled}
             style={[styles.userList]}
             onPress={onPress}>
             <Avatar.Image 
@@ -22,13 +25,25 @@ const Item = ({item, onPress, backgroundColor}) => {
                     </Text>
                     <Text>
                         <Chip 
+                            disabled={disabled}
                             icon={item.isPresent ? 'check': 'cancel'} 
                             style={{backgroundColor}}
-                            onPress={() => onPress()}>{item.isPresent ? 'Present': 'Absent'}</Chip>
+                            onPress={onPress}>{item.isPresent ? 'Present': 'Absent'}</Chip>
+                    </Text>
+                    <Text>
+                        {
+                            !item.isPresent && item.absentReason ?
+                            <IconButton
+                                icon="comment"
+                                color={Colors.red500}
+                                size={20}
+                                onPress={(e) => showAbsentReason(e, item)}/>
+                            : ''
+                        }
                     </Text>
                 </View>
             </View>
-        </TouchableOpacity>
+        </Pressable>
         
             // <Card 
             //     style={[styles.card, {backgroundColor}]}
@@ -55,11 +70,13 @@ const Item = ({item, onPress, backgroundColor}) => {
 const Attendance = (props) => {
     const { theme, navigation } = props
     const [studentData, setStudentData] = useState([])
-    const [showReasonModal, setShowReasonModal] = useState(false)
+    const [readOnly, setReadOnly] = useState(false)
     const [currentStudent, setCurrentStudent] = useState(null)
+    const [viewReason, setViewReason] = useState(false)
 
     useEffect(() => {
-        if (!props.fetchStudentsResponse) {
+        console.log(props)
+        if (!props.fetchStudentsResponse || !props.fetchStudentsResponse[props.selectedClass]) {
             props.getStudents(props.selectedClass)
         }
     }, [])
@@ -71,17 +88,29 @@ const Attendance = (props) => {
                 style={{marginRight: 20}}>
                 <Button 
                     onPress={() => submitAttendance()} 
-                    title={"SUBMIT"}
-                    // disabled={!props.selectedClass}
+                    title={readOnly ? "SUBMITTED" : "SUBMIT"}
+                    disabled={readOnly}
                 />
             </TouchableOpacity>
           )
         });
-    }, [navigation, props, studentData]);
+    }, [navigation, props, studentData, readOnly]);
+
 
     useEffect(() => {
 
-        if (props.fetchStudentsResponse) {
+        if (props.currentAttendance && 
+            props.currentAttendance[props.selectedClass] &&
+            props.currentAttendance[props.selectedClass].attendanceId
+        ) {
+            setReadOnly(true)
+        }
+
+        if (props.currentAttendance && props.currentAttendance[props.selectedClass]) {
+
+            setStudentData(props.currentAttendance[props.selectedClass].attendanceData)
+
+        } else if (props.fetchStudentsResponse) {
             let data = props.fetchStudentsResponse[props.selectedClass] 
                     ? props.fetchStudentsResponse[props.selectedClass].map( item => {
                 return {
@@ -92,18 +121,24 @@ const Attendance = (props) => {
 
             setStudentData(data)
         }
-    }, [props.fetchStudentsResponse])
+    }, [props.fetchStudentsResponse, props.currentAttendance])
+
+    useEffect(() => {
+        if (props.submitAttendanceResponse) {
+            props.setClassAttendance({[props.selectedClass] : props.submitAttendanceResponse })
+        }
+    }, [props.submitAttendanceResponse])
 
 
-    const markAttendance = (item, index) => { 
-        setCurrentStudent(item)
-        // if (item.isPresent) {
-            setShowReasonModal(true)
-        // }
+    const markAttendance = (item, index) => {
+            
         item.isPresent = !item.isPresent
+        item['index'] = index
+
+        setCurrentStudent(item)
         let sData = [...studentData]
         setStudentData(sData)
-        props.setClassAttendance({[props.selectedClass] : sData})
+        // props.setClassAttendance({[props.selectedClass] : sData})
     }
 
     const renderItem = ({ item, index }) => { 
@@ -115,6 +150,8 @@ const Attendance = (props) => {
                 item={item} 
                 onPress={() => markAttendance(item, index)} 
                 backgroundColor={backgroundColor}
+                showAbsentReason={showAbsentReason}
+                disabled={readOnly}
             />
         )
     }
@@ -126,7 +163,9 @@ const Attendance = (props) => {
 
     const submitAttendance = () => {
         
-        props.setClassAttendance({[props.selectedClass] : studentData})
+        props.setClassAttendance({[props.selectedClass] : {
+            attendanceData: studentData
+        }})
         const data = {
             className: props.selectedClass,
             attendanceDate: props.attendanceDate || new Date().toISOString(),
@@ -134,6 +173,27 @@ const Attendance = (props) => {
         }
         props.saveAttendance(data)
         
+    }
+
+    const updateAbsentReason = (reasonObject) => {
+        let student = {...currentStudent}
+        student.absentReason = reasonObject
+        setCurrentStudent(null)
+        setViewReason(false)
+        let sData = [...studentData]
+        sData[reasonObject.studentIndex]['absentReason'] = reasonObject.reason
+        setStudentData(sData)
+        props.setClassAttendance({[props.selectedClass] : {
+            attendanceData: sData
+        }})
+    }
+
+    const showAbsentReason = (e, item) => {
+        e.preventDefault()
+        setViewReason(true)
+        setCurrentStudent(item)
+        let sData = [...studentData]
+        setStudentData(sData)
     }
 
     return (
@@ -150,22 +210,34 @@ const Attendance = (props) => {
                     style={[styles.countBar,{color: theme.colors.darkRed}, {backgroundColor: theme.colors.red}]}
                     >Absent Students : {countAbsent()}</Text>
             </View>
-            <View style={styles.cardCont}>
+            <ScrollView style={styles.userListCont}>
                 <FlatList
+                    style={styles.flatList}
                     data={studentData}
                     renderItem={renderItem}
                     keyExtractor={(item) => item.rollNo.toString()}
                     // numColumns="2"
                 />
-            </View>
-            <InputModal showModal={showReasonModal} item={currentStudent}/>
+            </ScrollView>
+            {
+                currentStudent 
+                ? <InputModal 
+                    readOnly={readOnly}
+                    item={currentStudent} 
+                    onAbsentReason={updateAbsentReason} 
+                    viewReason={viewReason} />
+                : <Text></Text>
+            }
         </View>
     )
 }
 
 const styles = StyleSheet.create({
-    cardCont: {
+    userListCont: {
         // display: 'flex',
+    },
+    flatList: {
+        paddingBottom: 50
     },
     card: {
         width: '48%', 
@@ -180,7 +252,6 @@ const styles = StyleSheet.create({
         display: 'flex',
         flexDirection: 'row',
         justifyContent: 'space-around',
-        // flexWrap: 'wrap'
     },
     countBar: {
         backgroundColor: 'white',
@@ -198,7 +269,6 @@ const styles = StyleSheet.create({
         padding: 5,
         borderRadius: 5,
         margin: 5,
-        // flexGrow: 2,
         backgroundColor: 'white'
     },
     avatar: {

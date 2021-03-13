@@ -106,7 +106,7 @@ export const saveAttendance = (attendanceData) => {
     return dispatch => {
         dispatch(submitAttendance())
         attendanceService.submitAttendance(attendanceData).then(response => {
-            dispatch(submitAttendanceSuccess(response))
+            dispatch(submitAttendanceSuccess(response.data.payload))
         }).catch(error =>{
             console.log('SUBMIT ATTENDANCE ERROR: ', error)
             dispatch(submitAttendanceError(error.response.data))

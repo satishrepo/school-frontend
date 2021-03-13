@@ -19,7 +19,8 @@ const mapStateToProps = state => {
         fetchStudents: state.attendanceReducer.fetchStudents,
         fetchStudentsResponse: state.attendanceReducer.fetchStudentsResponse,
         fetchStudentsError: state.attendanceReducer.fetchStudentsError,
-        currentAttendance: state.attendanceReducer.currentAttendance
+        currentAttendance: state.attendanceReducer.currentAttendance,
+        classAttendance: state.attendanceReducer.classAttendance
     }
 }
 
