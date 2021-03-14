@@ -1,11 +1,18 @@
 import React, { useState, useEffect, useLayoutEffect } from 'react';
-import { StyleSheet, Text, View, ScrollView, FlatList, TouchableOpacity, Button, Pressable } from 'react-native';
+import { 
+    StyleSheet, Text, View, ScrollView, ActivityIndicator,
+    FlatList, TouchableOpacity, Button, Pressable } from 'react-native';
 import InputModal from './inputModal'
 import { 
     Card, Title, Paragraph, withTheme, Avatar, Chip, IconButton, Colors
 } from 'react-native-paper';
+import DialogBox from '../../../components/dialog'
 import { toTitleCase } from '../../../libs/helper'
 
+const CONFIRM_ATTENDANCE = {
+    title: 'Are you sure ?',
+    content: 'This will permanently save attendance data, are you sure you want to do this ?'
+}
 
 const Item = ({item, onPress, backgroundColor, showAbsentReason, disabled}) => {
     return (
@@ -68,17 +75,29 @@ const Item = ({item, onPress, backgroundColor, showAbsentReason, disabled}) => {
 }
 
 const Attendance = (props) => {
+
     const { theme, navigation } = props
+    const todayDate = new Date().getDate()
     const [studentData, setStudentData] = useState([])
     const [readOnly, setReadOnly] = useState(false)
     const [currentStudent, setCurrentStudent] = useState(null)
     const [viewReason, setViewReason] = useState(false)
+    const [showConfirm, setShowConfirm] = useState(false)
 
     useEffect(() => {
         console.log(props)
-        if (!props.fetchStudentsResponse || !props.fetchStudentsResponse[props.selectedClass]) {
+        // if (!props.fetchStudentsResponse || !props.fetchStudentsResponse[props.selectedClass]) {
+        //     props.getStudents(props.selectedClass)
+        // }
+
+        if (!props.recentAttendances || !props.recentAttendances[props.selectedClass]) {
             props.getStudents(props.selectedClass)
         }
+
+        // if (props.recentAttendances && props.recentAttendances[props.selectedClass]) {
+        //     console.log('setting data in current attendance')
+        //     props.setClassAttendance(props.recentAttendances[props.selectedClass])
+        // }
     }, [])
 
     useLayoutEffect(() => {
@@ -87,30 +106,55 @@ const Attendance = (props) => {
             <TouchableOpacity 
                 style={{marginRight: 20}}>
                 <Button 
-                    onPress={() => submitAttendance()} 
+                    onPress={() => setShowConfirm(true)} 
                     title={readOnly ? "SUBMITTED" : "SUBMIT"}
-                    disabled={readOnly}
+                    disabled={
+                        props.fetchStudents ||
+                        !studentData.length ||
+                        readOnly
+                    }
                 />
             </TouchableOpacity>
           )
         });
-    }, [navigation, props, studentData, readOnly]);
+    }, [navigation, props, studentData, readOnly, setShowConfirm]);
 
 
     useEffect(() => {
+        console.log('current Attendance', props.currentAttendance)
+        // if attendanceId present in current attendance 
+        // then make page readOnly
+        // if (props.currentAttendance && 
+        //     props.currentAttendance[props.selectedClass] &&
+        //     props.currentAttendance[props.selectedClass].attendanceId
+        // ) {
+        //     setReadOnly(true)
+        // }
 
-        if (props.currentAttendance && 
-            props.currentAttendance[props.selectedClass] &&
-            props.currentAttendance[props.selectedClass].attendanceId
+        if (props.recentAttendances && 
+            props.recentAttendances[props.selectedClass] &&
+            props.recentAttendances[props.selectedClass].attendanceId
         ) {
             setReadOnly(true)
         }
 
-        if (props.currentAttendance && props.currentAttendance[props.selectedClass]) {
+        
+        // get from recent attendance
+        // if not then get from current attendance 
+        // if not then get from api
 
-            setStudentData(props.currentAttendance[props.selectedClass].attendanceData)
+        if(props.recentAttendances && props.recentAttendances[props.selectedClass]) {
+            console.log('1')
+            setStudentData(props.recentAttendances[props.selectedClass].attendanceData)
 
-        } else if (props.fetchStudentsResponse) {
+        } 
+        // else if (props.currentAttendance && props.currentAttendance[props.selectedClass]) {
+        //     console.log('2')
+        //     setStudentData(props.currentAttendance[props.selectedClass].attendanceData)
+
+        // } 
+        else if (props.fetchStudentsResponse) {
+            console.log('3', props.fetchStudentsResponse)
             let data = props.fetchStudentsResponse[props.selectedClass] 
                     ? props.fetchStudentsResponse[props.selectedClass].map( item => {
                 return {
@@ -121,11 +165,13 @@ const Attendance = (props) => {
 
             setStudentData(data)
         }
-    }, [props.fetchStudentsResponse, props.currentAttendance])
+    }, [props.fetchStudentsResponse])
 
     useEffect(() => {
+        // save response of submitted attendance object
         if (props.submitAttendanceResponse) {
             props.setClassAttendance({[props.selectedClass] : props.submitAttendanceResponse })
+            props.saveRecentAttendance({[props.submitAttendanceResponse.className] : props.submitAttendanceResponse})
         }
     }, [props.submitAttendanceResponse])
 
@@ -138,7 +184,6 @@ const Attendance = (props) => {
         setCurrentStudent(item)
         let sData = [...studentData]
         setStudentData(sData)
-        // props.setClassAttendance({[props.selectedClass] : sData})
     }
 
     const renderItem = ({ item, index }) => { 
@@ -162,10 +207,10 @@ const Attendance = (props) => {
     }
 
     const submitAttendance = () => {
-        
-        props.setClassAttendance({[props.selectedClass] : {
-            attendanceData: studentData
-        }})
+
+        // props.setClassAttendance({[props.selectedClass] : {
+        //     attendanceData: studentData
+        // }})
         const data = {
             className: props.selectedClass,
             attendanceDate: props.attendanceDate || new Date().toISOString(),
@@ -173,6 +218,13 @@ const Attendance = (props) => {
         }
         props.saveAttendance(data)
         
+    }
+
+    const replyConfirm = (result) => {
+        if (result) {
+            submitAttendance()
+        }
+        setShowConfirm(false)
     }
 
     const updateAbsentReason = (reasonObject) => {
@@ -186,6 +238,9 @@ const Attendance = (props) => {
         props.setClassAttendance({[props.selectedClass] : {
             attendanceData: sData
         }})
+        props.saveRecentAttendance({[props.selectedClass] : {
+            attendanceData: sData
+        }})
     }
 
     const showAbsentReason = (e, item) => {
@@ -196,9 +251,20 @@ const Attendance = (props) => {
         setStudentData(sData)
     }
 
+    const onCancelAbsent = (indexObj) => {
+        setCurrentStudent(null)
+        setViewReason(false)
+        if (!indexObj.viewReason) {
+            let sData = [...studentData]
+            sData[indexObj.index].isPresent = !sData[indexObj.index].isPresent
+            delete sData[indexObj.index]['absentReason']
+            setStudentData(sData)
+        }
+    }
+
     return (
         <View >
-
+            
             <View style={styles.countBarCont}>
                 <Text
                     style={[styles.countBar, {color: theme.colors.darkBlue}, {backgroundColor: theme.colors.primary}]}
@@ -210,24 +276,32 @@ const Attendance = (props) => {
                     style={[styles.countBar,{color: theme.colors.darkRed}, {backgroundColor: theme.colors.red}]}
                     >Absent Students : {countAbsent()}</Text>
             </View>
-            <ScrollView style={styles.userListCont}>
-                <FlatList
-                    style={styles.flatList}
-                    data={studentData}
-                    renderItem={renderItem}
-                    keyExtractor={(item) => item.rollNo.toString()}
-                    // numColumns="2"
-                />
-            </ScrollView>
+            {
+                studentData.length ? (
+                    <ScrollView style={styles.userListCont}>
+                        <FlatList
+                            style={styles.flatList}
+                            data={studentData}
+                            renderItem={renderItem}
+                            keyExtractor={(item) => item.rollNo.toString()}
+                            // numColumns="2"
+                        />
+                    </ScrollView>
+                ) : props.fetchStudents ? <ActivityIndicator size="large" /> : <Text>Could not load students</Text>
+            }
             {
                 currentStudent 
                 ? <InputModal 
+                    onCancelAbsent={onCancelAbsent}
                     readOnly={readOnly}
                     item={currentStudent} 
                     onAbsentReason={updateAbsentReason} 
                     viewReason={viewReason} />
                 : <Text></Text>
             }
+
+            <DialogBox data={CONFIRM_ATTENDANCE} showConfirm={showConfirm} reply={replyConfirm}/>
+            
         </View>
     )
 }

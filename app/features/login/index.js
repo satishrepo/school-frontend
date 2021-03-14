@@ -35,7 +35,7 @@ const loginService = (props) => {
 
     const login = () => {
         console.log(email, password)
-
+        
         if(email && password) {
             props.userLogin({email, password})
         }

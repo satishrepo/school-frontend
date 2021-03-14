@@ -23,8 +23,8 @@ export const userLogin = (payload) => {
         loginService.login(payload).then(response => {
             dispatch(loginSuccess(response.data))
         }).catch(error =>{
-            console.log('error in login: ', error)
-            dispatch(loginFailure(error.response.data))
+            console.log('ERROR IN LOGIN: ', error)
+            dispatch(loginFailure(error))
         });
     }
 }

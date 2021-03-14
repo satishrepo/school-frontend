@@ -1,21 +1,27 @@
 import React, { useState, useEffect, useLayoutEffect } from "react";
 import { FlatList, SafeAreaView, StatusBar, StyleSheet, Text, TouchableOpacity, Button } from "react-native";
+import { withTheme } from "react-native-paper"
 
-const Item = ({ item, onPress, style }) => (
+const Item = ({ item, onPress, style, status }) => (
   <TouchableOpacity onPress={onPress} style={[styles.item, style]}>
     <Text style={styles.title}>{item.title}</Text>
+    <Text style={styles.status}>{status}</Text>
   </TouchableOpacity>
 );
 
 const Class = (props) => {
   
-  const { navigation } = props
+  const { navigation, theme } = props
   const [selectedId, setSelectedId] = useState(null);
   const [classList, setClassList] = useState([]);
 
   useEffect(() => {
+    console.log(props)
     if (!props.fetchClassesResponse) {
       props.getClasses()
+    }
+    if(props.selectedClass) {
+      setSelectedId(props.selectedClass)
     }
   }, [])
 
@@ -31,13 +37,27 @@ const Class = (props) => {
   }
 
   const renderItem = ({ item }) => {
-      const backgroundColor = item.id === selectedId ? "#3498db" : "#ffffff";
-
+      let backgroundColor = item.id === selectedId ? "#3498db" : "#ffffff";
+      let status = ''
+      if (
+        props.recentAttendances && 
+        props.recentAttendances[item.id] && 
+        props.recentAttendances[item.id].attendanceId) {
+          status = 'Submitted'
+          backgroundColor = theme.colors.green
+      } else if (
+        props.recentAttendances && 
+        props.recentAttendances[item.id] && 
+        props.recentAttendances[item.id].attendanceData) {
+          status = 'Saved'
+      }
+      
       return (
           <Item
               item={item}
               onPress={() => selectClass(item)}
               style={{ backgroundColor }}
+              status={status}
           />
       );
   };
@@ -86,8 +106,11 @@ const styles = StyleSheet.create({
     borderRadius: 5
   },
   title: {
-    fontSize: 32,
+    fontSize: 20,
+  },
+  status: {
+    fontSize: 10
   },
 });
 
-export default Class;
+export default withTheme(Class);

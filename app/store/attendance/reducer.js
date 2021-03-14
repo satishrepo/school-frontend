@@ -13,6 +13,7 @@ const initState = {
     submitAttendance: false,
     submitAttendanceResponse: null,
     submitAttendanceError: null,
+    recentAttendances: null
 }
 
 
@@ -83,6 +84,11 @@ export default function attendanceReducer( state = initState, action) {
                 ...state,
                 submitAttendanceError: action.error,
                 submitAttendance: false
+            }
+        case types.SET_RECENT_ATTENDANCES: 
+            return {
+                ...state,
+                recentAttendances: {...state.recentAttendances, ...action.attendanceData}
             }
         default: 
             return state

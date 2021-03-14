@@ -60,6 +60,11 @@ const submitAttendanceError = (error) => ({
     error
 })
 
+const setRecentAttendances = (attendanceData) => ({
+    type: type.SET_RECENT_ATTENDANCES,
+    attendanceData
+})
+
 export const getClasses = () => {
     return dispatch => {
         dispatch(fetchClasses())
@@ -110,6 +115,12 @@ export const saveAttendance = (attendanceData) => {
         }).catch(error =>{
             console.log('SUBMIT ATTENDANCE ERROR: ', error)
             dispatch(submitAttendanceError(error.response.data))
-        });
+        })
+    }
+}
+
+export const saveRecentAttendance = (attendanceData) => {
+    return dispatch => {
+        dispatch(setRecentAttendances(attendanceData))
     }
 }

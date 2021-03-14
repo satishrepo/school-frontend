@@ -44,7 +44,10 @@ const InputModal = (props) => {
 	const cancelModel = () => {
 
 		setVisible(false)
-		// setCurrentItem(null)
+		props.onCancelAbsent({
+			index: currentItem.index,
+			viewReason: props.viewReason
+		})
 	}
 
 	const onChangeReason = (text, field) => {
@@ -55,7 +58,7 @@ const InputModal = (props) => {
   	const containerStyle = {backgroundColor: 'white', padding: 20};
 
   return (
-    <Provider>
+    <View>
 		<Portal >
 			
 			<Modal dismissable={false} visible={visible} contentContainerStyle={containerStyle}>
@@ -86,24 +89,34 @@ const InputModal = (props) => {
 						// icon="content-save-outline" 
 						mode="contained" 
 						color={theme.colors.accent}
-						onPress={cancelModel}>Cancel</Button>
+						onPress={cancelModel}>Back</Button>
 					: <Text></Text>
 				}
 				{
 					!props.readOnly ? 
-					<Button 
-						style={styles.saveButton}
-						// icon="content-save-outline" 
-						mode="contained" 
-						color={theme.colors.primary}
-						disabled={!absentReasonObj.reason && !absentReasonObj.note}
-						onPress={hideModal}>Save</Button>
+					<View style={styles.buttonCont}>
+						<Button 
+							style={styles.saveButton}
+							// icon="content-save-outline" 
+							mode="contained" 
+							color={theme.colors.gray}
+							// disabled={!absentReasonObj.reason && !absentReasonObj.note}
+							onPress={cancelModel}>Cancel</Button>
+						<Button 
+							style={styles.saveButton}
+							// icon="content-save-outline" 
+							mode="contained" 
+							color={theme.colors.primary}
+							disabled={!absentReasonObj.reason && !absentReasonObj.note}
+							onPress={hideModal}>Save</Button>
+					</View>
 					: <Text></Text>
 				}
 
+
 			</Modal>
 		</Portal>
-    </Provider>
+    </View>
   );
 };
 
@@ -125,10 +138,15 @@ const styles = StyleSheet.create({
 		fontWeight: 'bold',
 		fontSize: 18
 	},
-	saveButton: {
+	buttonCont: {
 		display: 'flex',
+		flexDirection: 'row',
+		justifyContent: 'flex-end',
+	},
+	saveButton: {
 		width: '30%',
-		alignSelf: 'flex-end',
+		marginTop: 10,
+		marginLeft: 10
 	}
 })
 
