@@ -90,8 +90,20 @@ const Attendance = (props) => {
         //     props.getStudents(props.selectedClass)
         // }
 
-        if (!props.recentAttendances || !props.recentAttendances[props.selectedClass]) {
+        if (
+            (!props.fetchStudentsResponse || !props.fetchStudentsResponse[props.selectedClass]) &&
+            (!props.recentAttendances || !props.recentAttendances[props.selectedClass]) 
+        ) {
             props.getStudents(props.selectedClass)
+        }
+
+        // if attendanceId present in current attendance 
+        // then make page readOnly
+        if (props.recentAttendances && 
+            props.recentAttendances[props.selectedClass] &&
+            props.recentAttendances[props.selectedClass].attendanceId
+        ) {
+            setReadOnly(true)
         }
 
         // if (props.recentAttendances && props.recentAttendances[props.selectedClass]) {
@@ -121,22 +133,15 @@ const Attendance = (props) => {
 
 
     useEffect(() => {
-        console.log('current Attendance', props.currentAttendance)
-        // if attendanceId present in current attendance 
-        // then make page readOnly
+        // console.log('current Attendance', props.currentAttendance)
         // if (props.currentAttendance && 
         //     props.currentAttendance[props.selectedClass] &&
         //     props.currentAttendance[props.selectedClass].attendanceId
         // ) {
-        //     setReadOnly(true)
-        // }
-
-        if (props.recentAttendances && 
-            props.recentAttendances[props.selectedClass] &&
-            props.recentAttendances[props.selectedClass].attendanceId
-        ) {
-            setReadOnly(true)
-        }
+            //     setReadOnly(true)
+            // }
+            
+        
 
         
         // get from recent attendance
