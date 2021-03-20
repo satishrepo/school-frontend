@@ -63,7 +63,16 @@ const Class = (props) => {
   };
 
   const goTo = (screen) => {
-      navigation.navigate(screen, {'selectedClass': props.selectedClass});
+    let goToSreen = screen
+    if (
+        props.recentAttendances && 
+        props.recentAttendances[props.selectedClass] && 
+        props.recentAttendances[props.selectedClass].attendanceId
+      ) {
+        goToSreen = 'Attendance'
+      }
+
+    navigation.navigate(goToSreen, {'selectedClass': props.selectedClass});
   }
 
   useLayoutEffect(() => {

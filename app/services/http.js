@@ -6,6 +6,7 @@ axios.interceptors.request.use( async (req) => {
 
     const authToken = await get('authToken')
 
+    // req.headers['Access-Control-Allow-Origin'] = '*'
     if (!req.url.includes('/login')) {
         req.headers["Authorization"] = authToken
     }
