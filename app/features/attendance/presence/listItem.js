@@ -1,26 +1,7 @@
 import React from 'react';
-import {
-    StyleSheet,
-    Text,
-    View,
-    // ScrollView,
-    // ActivityIndicator,
-    // FlatList,
-    // TouchableOpacity,
-    // Button,
-    Pressable
-} from 'react-native';
+import {StyleSheet, Text, View, Pressable} from 'react-native';
 
-import {
-    // Card,
-    // Title,
-    // Paragraph,
-    withTheme,
-    Avatar,
-    Chip,
-    IconButton,
-    Colors
-} from 'react-native-paper';
+import {withTheme, Avatar, Chip, IconButton, Colors} from 'react-native-paper';
 
 import {toTitleCase} from '../../../libs/helper';
 

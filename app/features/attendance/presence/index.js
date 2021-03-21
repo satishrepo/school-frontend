@@ -94,7 +94,8 @@ const Attendance = (props) => {
         setClassAttendance,
         saveRecentAttendance,
         fetchStudents,
-        recentAttendances
+        recentAttendances,
+        selectedSubject
     } = props;
 
     const initReasonData = {
@@ -340,6 +341,7 @@ const Attendance = (props) => {
                     ]}
                 >
                     {toTitleCase(selectedClass)}
+                    {toTitleCase(selectedSubject)}
                 </Text>
                 <Text
                     style={[
@@ -373,7 +375,7 @@ const Attendance = (props) => {
             ) : (
                 [
                     fetchStudents ? (
-                        <ActivityIndicator size="large" />
+                        <ActivityIndicator size="large" key="studentsLoader" />
                     ) : (
                         <Text key="no-student">Could not load students</Text>
                     )

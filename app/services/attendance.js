@@ -1,13 +1,14 @@
-import http from './http'
-import { getClassesUrl, getStudentsUrl, submitAttendanceUrl } from './apiUrl'
+import http from './http';
+import {getClassesUrl, getStudentsUrl, submitAttendanceUrl} from './apiUrl';
 
 export const getClasses = () => {
-    const classes = [{
+    const classes = [
+        {
             id: 'ukg',
             title: 'Ukg'
         },
         {
-            id : 'lkg',
+            id: 'lkg',
             title: 'Lkg'
         },
         {
@@ -17,31 +18,64 @@ export const getClasses = () => {
         {
             id: 'second',
             title: 'Second'
-        }];
+        }
+    ];
 
     return new Promise((resolve, reject) => {
-        return http.get(getClassesUrl)
-        .then(response => resolve(classes))
-        .catch(error => resolve(classes))
+        return http
+            .get(getClassesUrl)
+            .then((response) => resolve(classes))
+            .catch((error) => resolve(classes));
         // .then(response => resolve(response))
         // .catch(error => reject(error))
-    })
-}
+    });
+};
 
+export const getSubjects = () => {
+    const classes = [
+        {
+            id: 'hindi',
+            title: 'Hindi'
+        },
+        {
+            id: 'english',
+            title: 'English'
+        },
+        {
+            id: 'maths',
+            title: 'Maths'
+        },
+        {
+            id: 'science',
+            title: 'Science'
+        }
+    ];
+
+    return new Promise((resolve, reject) => {
+        return http
+            .get(getClassesUrl)
+            .then((response) => resolve(classes))
+            .catch((error) => resolve(classes));
+        // .then(response => resolve(response))
+        // .catch(error => reject(error))
+    });
+};
 
 export const getStudents = (className) => {
-    const url = getStudentsUrl + className
+    const url = getStudentsUrl + className;
     return new Promise((resolve, reject) => {
-        return http.get(url)
-        .then(response => resolve(response))
-        .catch(error => reject(error))
-    })
-}
+        return http
+            .get(url)
+            .then((response) => resolve(response))
+            .catch((error) => reject(error));
+    });
+};
 
 export const submitAttendance = (data) => {
     return new Promise((resolve, reject) => {
-        return http.post(submitAttendanceUrl, data)
-        .then(response => resolve(response))
-        .catch(error => reject(error))
-    })
-}
+        return http
+            .post(submitAttendanceUrl, data)
+            .then((response) => resolve(response))
+            .catch((error) => reject(error));
+    });
+};

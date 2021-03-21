@@ -36,80 +36,54 @@ const Item = ({item, onPress, style, status}) => (
     </TouchableOpacity>
 );
 
-const Class = (props) => {
+const Subject = (props) => {
+    console.log('props', props);
     const {
         navigation,
-        theme,
-        fetchClassesResponse,
-        selectedClass,
-        fetchClasses,
-        recentAttendances,
-        setClassName,
-        getClasses
+        // theme,
+        fetchSubjects,
+        fetchSubjectsResponse,
+        selectedSubject,
+        getSubjects,
+        setSubject
     } = props;
     const [selectedId, setSelectedId] = useState(null);
-    const [classList, setClassList] = useState([]);
+    const [subjectList, setSubjectList] = useState([]);
 
     useEffect(() => {
-        console.log(props);
-        if (!fetchClassesResponse) {
-            getClasses();
+        if (!fetchSubjectsResponse) {
+            getSubjects();
         }
-        if (selectedClass) {
-            setSelectedId(selectedClass);
+        if (selectedSubject) {
+            setSelectedId(selectedSubject);
         }
     }, []);
 
     useEffect(() => {
-        if (fetchClassesResponse) {
-            setClassList(fetchClassesResponse);
+        if (fetchSubjectsResponse) {
+            setSubjectList(fetchSubjectsResponse);
         }
-    }, [fetchClasses]);
+    }, [fetchSubjects]);
 
-    const selectClass = (item) => {
+    const selectSubject = (item) => {
         setSelectedId(item.id);
-        setClassName(item.id);
+        setSubject(item.id);
     };
 
     const renderItem = ({item}) => {
-        let backgroundColor = item.id === selectedId ? '#3498db' : '#ffffff';
-        let status = '';
-        if (
-            recentAttendances &&
-            recentAttendances[item.id] &&
-            recentAttendances[item.id].attendanceId
-        ) {
-            status = 'Submitted';
-            backgroundColor = theme.colors.green;
-        } else if (
-            recentAttendances &&
-            recentAttendances[item.id] &&
-            recentAttendances[item.id].attendanceData
-        ) {
-            status = 'Saved';
-        }
+        const backgroundColor = item.id === selectedId ? '#3498db' : '#ffffff';
 
         return (
             <Item
                 item={item}
-                onPress={() => selectClass(item)}
+                onPress={() => selectSubject(item)}
                 style={{backgroundColor}}
-                status={status}
             />
         );
     };
 
     const goTo = (screen) => {
-        let goToSreen = screen;
-        if (
-            recentAttendances &&
-            recentAttendances[selectedClass] &&
-            recentAttendances[selectedClass].attendanceId
-        ) {
-            goToSreen = 'Attendance';
-        }
-
-        navigation.navigate(goToSreen, {selectedClass});
+        navigation.navigate(screen);
     };
 
     useLayoutEffect(() => {
@@ -117,19 +91,19 @@ const Class = (props) => {
             headerRight: () => (
                 <TouchableOpacity style={{marginRight: 20}}>
                     <Button
-                        onPress={() => goTo('Time')}
+                        onPress={() => goTo('Attendance')}
                         title="NEXT"
-                        disabled={!selectedClass}
+                        disabled={!selectedSubject}
                     />
                 </TouchableOpacity>
             )
         });
-    }, [navigation, selectedClass]);
+    }, [navigation, selectedSubject]);
 
     return (
         <SafeAreaView style={styles.container}>
             <FlatList
-                data={classList}
+                data={subjectList}
                 renderItem={renderItem}
                 keyExtractor={(item) => item.id.toString()}
                 extraData={selectedId}
@@ -138,4 +112,4 @@ const Class = (props) => {
     );
 };
 
-export default withTheme(Class);
+export default withTheme(Subject);

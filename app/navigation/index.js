@@ -10,11 +10,13 @@ import {BottomNavigation} from 'react-native-paper';
 
 import {save, get} from '../services/storage';
 
+import Home from '../features/home';
 import Login from '../store/login/container';
 import Profile from '../features/profile';
 import Time from '../store/attendance/containers/time';
 import Class from '../store/attendance/containers/class';
 import Presence from '../store/attendance/containers/presence';
+import RecentAttendance from '../store/attendance/containers/recentAttendance';
 
 const Stack = createStackNavigator();
 
@@ -22,6 +24,13 @@ const AttendanceStack = () => {
     return (
         <NavigationContainer>
             <Stack.Navigator>
+                <Stack.Screen
+                    name="RecentAttendance"
+                    component={RecentAttendance}
+                    options={() => ({
+                        headerTitle: 'Recent Attendance'
+                    })}
+                />
                 <Stack.Screen
                     name="Class"
                     component={Class}
@@ -72,11 +81,13 @@ const NavConfig = () => {
     const isLoggedIn = !!(savedUser || (loggedUser && loggedUser.user_id));
 
     const [routes] = useState([
+        {key: 'home', title: 'Home', icon: 'home'},
         {key: 'attendance', title: 'Attendance', icon: 'album'},
         {key: 'profile', title: 'Profile', icon: 'history'}
     ]);
 
     const renderScene = BottomNavigation.SceneMap({
+        home: Home,
         attendance: AttendanceStack,
         profile: Profile
     });
