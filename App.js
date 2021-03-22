@@ -23,6 +23,9 @@ const theme = {
         red: '#F2453A',
         darkRed: '#a50404',
         gray: '#f2f2f2'
+    },
+    margin: {
+        headerRight: 20
     }
 };
 

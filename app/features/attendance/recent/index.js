@@ -5,19 +5,49 @@ import {
     Pressable,
     TouchableOpacity,
     Button,
-    Text
+    Text,
+    StyleSheet
 } from 'react-native';
 import {withTheme} from 'react-native-paper';
+import Icon from 'react-native-vector-icons/FontAwesome';
+
+const styles = StyleSheet.create({
+    container: {
+        padding: 20
+    },
+    item: {
+        padding: 20,
+        marginVertical: 8,
+        // marginHorizontal: 16,
+        borderRadius: 5
+        // display: 'flex',
+        // flexDirection: 'row',
+        // justifyContent: 'flex-start'
+    },
+    itemText: {
+        fontSize: 30
+        // color: 'red'
+    },
+    title: {
+        fontSize: 20
+    },
+    status: {
+        fontSize: 10
+    }
+});
 
 const ListItem = (props) => {
-    const {onPress, item} = props;
+    const {onPress, item, backgroundColor} = props;
     return (
         <Pressable
             // disabled={disabled}
-            // style={[styles.userList]}
+            style={[styles.item, {backgroundColor}]}
             onPress={() => onPress()}
         >
-            <Text>{item}</Text>
+            <Text style={styles.itemText}>
+                {' '}
+                <Icon name="clock-o" size={30} /> {item}
+            </Text>
         </Pressable>
     );
 };
@@ -41,10 +71,12 @@ const RecentAttendance = (props) => {
     useLayoutEffect(() => {
         navigation.setOptions({
             headerRight: () => (
-                <TouchableOpacity>
+                <TouchableOpacity
+                    style={{marginRight: theme.margin.headerRight}}
+                >
                     <Button
                         onPress={() => goTo('Class')}
-                        title="NEXT"
+                        title="NEW ATTENDANCE"
                         // disabled={!selectedClass}
                     />
                 </TouchableOpacity>
@@ -55,16 +87,17 @@ const RecentAttendance = (props) => {
     const onSelectAttendance = () => {
         console.log('onSelectAttendance');
     };
+
     const renderItem = ({item}) => {
-        // const backgroundColor = item.isPresent
-        //     ? theme.colors.green
-        //     : theme.colors.red;
+        const backgroundColor = recentAttendances[item].attendanceId
+            ? theme.colors.green
+            : theme.colors.primary;
         // item.index = index;
         return (
             <ListItem
                 item={item}
                 onPress={onSelectAttendance}
-                // backgroundColor={backgroundColor}
+                backgroundColor={backgroundColor}
                 // showReason={showReason}
                 // disabled={readOnly}
             />
@@ -72,7 +105,7 @@ const RecentAttendance = (props) => {
     };
 
     return (
-        <View>
+        <View style={styles.container}>
             <FlatList
                 // style={styles.flatList}
                 data={recentAttendanceList}

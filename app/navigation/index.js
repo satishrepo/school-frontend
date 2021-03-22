@@ -28,7 +28,7 @@ const AttendanceStack = () => {
                     name="RecentAttendance"
                     component={RecentAttendance}
                     options={() => ({
-                        headerTitle: 'Recent Attendance'
+                        headerTitle: "Today's Attendance"
                     })}
                 />
                 <Stack.Screen
