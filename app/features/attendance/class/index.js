@@ -4,11 +4,11 @@ import {
     SafeAreaView,
     StatusBar,
     StyleSheet,
-    Text,
+    // list,
     TouchableOpacity,
     Button
 } from 'react-native';
-import {withTheme} from 'react-native-paper';
+import {withTheme, List} from 'react-native-paper';
 
 const styles = StyleSheet.create({
     container: {
@@ -30,10 +30,17 @@ const styles = StyleSheet.create({
 });
 
 const Item = ({item, onPress, style, status}) => (
-    <TouchableOpacity onPress={onPress} style={[styles.item, style]}>
-        <Text style={styles.title}>{item.title}</Text>
-        <Text style={styles.status}>{status}</Text>
-    </TouchableOpacity>
+    // <TouchableOpacity onPress={onPress} style={[styles.item, style]}>
+    //     <Text style={styles.title}>{item.title}</Text>
+    //     <Text style={styles.status}>{status}</Text>
+    // </TouchableOpacity>
+    <List.Item
+        style={[styles.item, style]}
+        title={item.title}
+        description={status}
+        onPress={onPress}
+        left={(prop) => <List.Icon {...prop} icon="account-group" />}
+    />
 );
 
 const Class = (props) => {

@@ -42,11 +42,15 @@ const ListItem = (props) => {
         <Pressable
             // disabled={disabled}
             style={[styles.item, {backgroundColor}]}
-            onPress={() => onPress()}
+            onPress={() => onPress(item)}
         >
             <Text style={styles.itemText}>
                 {' '}
-                <Icon name="clock-o" size={30} /> {item}
+                <Icon
+                    name={item.isSubmitted ? 'check' : 'clock-o'}
+                    size={30}
+                />{' '}
+                {item.className}
             </Text>
         </Pressable>
     );
@@ -54,12 +58,17 @@ const ListItem = (props) => {
 
 const RecentAttendance = (props) => {
     console.log(props);
-    const {navigation, recentAttendances, theme} = props;
+    const {navigation, recentAttendances, setClassName, theme} = props;
     const [recentAttendanceList, setRecentAttendanceList] = useState([]);
 
     useEffect(() => {
         if (recentAttendances) {
-            const list = Object.keys(recentAttendances);
+            const list = Object.keys(recentAttendances).map((item) => {
+                return {
+                    className: item,
+                    isSubmitted: !!recentAttendances[item].attendanceId
+                };
+            });
             setRecentAttendanceList(list);
         }
     }, []);
@@ -84,12 +93,18 @@ const RecentAttendance = (props) => {
         });
     }, [navigation]);
 
-    const onSelectAttendance = () => {
-        console.log('onSelectAttendance');
+    const onSelectAttendance = (item) => {
+        console.log('onSelectAttendance', item);
+        if (!item.isSubmitted) {
+            setClassName(item.className);
+            goTo('Time');
+        } else {
+            goTo('Attendance');
+        }
     };
 
     const renderItem = ({item}) => {
-        const backgroundColor = recentAttendances[item].attendanceId
+        const backgroundColor = item.isSubmitted
             ? theme.colors.green
             : theme.colors.primary;
         // item.index = index;
@@ -110,7 +125,7 @@ const RecentAttendance = (props) => {
                 // style={styles.flatList}
                 data={recentAttendanceList}
                 renderItem={renderItem}
-                keyExtractor={(item) => item.toString()}
+                keyExtractor={(item) => item.className.toString()}
                 // numColumns="2"
             />
         </View>

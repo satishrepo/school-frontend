@@ -1,14 +1,14 @@
 import React, {useState, useEffect, useLayoutEffect} from 'react';
 import {
     FlatList,
+    // Text,
     SafeAreaView,
     StatusBar,
     StyleSheet,
-    Text,
     TouchableOpacity,
     Button
 } from 'react-native';
-import {withTheme} from 'react-native-paper';
+import {withTheme, List} from 'react-native-paper';
 
 const styles = StyleSheet.create({
     container: {
@@ -19,7 +19,8 @@ const styles = StyleSheet.create({
         padding: 20,
         marginVertical: 8,
         marginHorizontal: 16,
-        borderRadius: 5
+        borderRadius: 5,
+        backgroundColor: 'white'
     },
     title: {
         fontSize: 20
@@ -29,11 +30,19 @@ const styles = StyleSheet.create({
     }
 });
 
-const Item = ({item, onPress, style, status}) => (
-    <TouchableOpacity onPress={onPress} style={[styles.item, style]}>
-        <Text style={styles.title}>{item.title}</Text>
-        <Text style={styles.status}>{status}</Text>
-    </TouchableOpacity>
+const Item = ({item, onPress, style}) => (
+    // <TouchableOpacity onPress={onPress} style={[styles.item, style]}>
+    //     <Text style={styles.title}>{item.title}</Text>
+    //     <Text style={styles.status}>{status}</Text>
+    // </TouchableOpacity>
+    <List.Item
+        key={item.title}
+        style={[styles.item, style]}
+        title={item.title}
+        description={item.title}
+        onPress={onPress}
+        left={(prop) => <List.Icon {...prop} icon="text-subject" />}
+    />
 );
 
 const Subject = (props) => {
@@ -63,7 +72,7 @@ const Subject = (props) => {
         if (fetchSubjectsResponse) {
             setSubjectList(fetchSubjectsResponse);
         }
-    }, [fetchSubjects]);
+    }, [fetchSubjects, fetchSubjectsResponse]);
 
     const selectSubject = (item) => {
         setSelectedId(item.id);

@@ -1,6 +1,6 @@
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
-// import {getSubjects, setSubject} from '../../attendance/actions';
+import {setClassName} from '../actions';
 import RecentAttendance from '../../../features/attendance/recent';
 
 const mapStateToProps = (state) => {
@@ -12,6 +12,7 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) =>
     bindActionCreators(
         {
+            setClassName
             // getSubjects,
             // setSubject
         },

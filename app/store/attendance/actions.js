@@ -92,7 +92,7 @@ export const getClasses = () => {
             })
             .catch((error) => {
                 console.log('get classes error: ', error);
-                dispatch(fetchClassesError(error.response.data));
+                dispatch(fetchClassesError(error));
             });
     };
 };
@@ -142,7 +142,7 @@ export const getStudents = (className) => {
             })
             .catch((error) => {
                 console.log('GET STUDENTS ERROR: ', error);
-                dispatch(fetchStudentsError(error.response.data));
+                dispatch(fetchStudentsError(error));
             });
     };
 };
@@ -163,7 +163,7 @@ export const saveAttendance = (attendanceData) => {
             })
             .catch((error) => {
                 console.log('SUBMIT ATTENDANCE ERROR: ', error);
-                dispatch(submitAttendanceError(error.response.data));
+                dispatch(submitAttendanceError(error));
             });
     };
 };

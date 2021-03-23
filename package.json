@@ -12,7 +12,7 @@
   },
   "dependencies": {
     "@react-native-async-storage/async-storage": "^1.14.1",
-    "@react-native-community/datetimepicker": "^3.0.9",
+    "@react-native-community/datetimepicker": "3.0.4",
     "@react-native-masked-view/masked-view": "^0.2.2",
     "@react-navigation/native": "^5.9.3",
     "@react-navigation/stack": "^5.14.3",
@@ -50,13 +50,13 @@
   "private": true,
   "lint-staged": {
     "**/*.js": [
-        "eslint --fix",
-        "prettier-eslint --write"
-      ]
+      "eslint --fix",
+      "prettier-eslint --write"
+    ]
   },
   "husky": {
-      "hooks": {
-          "pre-commit": "lint-staged"
-      }
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
   }
 }

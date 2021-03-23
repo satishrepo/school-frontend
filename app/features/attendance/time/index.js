@@ -28,14 +28,14 @@ const styles = StyleSheet.create({
 });
 
 const Time = (props) => {
-    const {navigation, route, setAttendanceDateTime} = props;
+    const {navigation, setAttendanceDateTime, selectedClass} = props;
     const [date, setDate] = useState(new Date());
     const [mode, setMode] = useState('time');
     const [show, setShow] = useState(true);
 
     const goTo = (screen) => {
         navigation.navigate(screen, {
-            selectedClass: route.params.selectedClass,
+            selectedClass,
             selectedDate: date
         });
     };
@@ -73,31 +73,29 @@ const Time = (props) => {
         return `${strTime} ${ampm}`;
     };
 
-    /* const showMode = (currentMode) => {
+    const showMode = (currentMode) => {
         setShow(true);
         setMode(currentMode);
     };
 
-    const showDatepicker = () => {
-        showMode('date');
-    };
+    // const showDatepicker = () => {
+    //     showMode('date');
+    // };
 
     const showTimepicker = () => {
         showMode('time');
-    }; */
+    };
 
     return (
         <View>
             {/* <View>
-          <Button onPress={showDatepicker} title="Show date picker!" />
-        </View>
-        <View>
-          <Button onPress={showTimepicker} title="Show time picker!" />
-        </View> */}
+                <Button onPress={showDatepicker} title="Show date picker!" />
+            </View> */}
             <View>
-                <Text style={styles.dateStyle}>
-                    {route.params.selectedClass}
-                </Text>
+                <Button onPress={showTimepicker} title="Select Time" />
+            </View>
+            <View>
+                <Text style={styles.dateStyle}>{selectedClass}</Text>
                 <Text style={styles.dateStyle}>{formatDate(date)}</Text>
                 <Text style={styles.timeStyle}>{formatTime(date)}</Text>
             </View>

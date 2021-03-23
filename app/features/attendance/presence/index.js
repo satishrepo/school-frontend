@@ -9,7 +9,7 @@ import {
     TouchableOpacity,
     Button
 } from 'react-native';
-import {withTheme} from 'react-native-paper';
+import {withTheme, Portal} from 'react-native-paper';
 import ReasonModal from './reasonModal';
 import DialogBox from '../../../components/dialog';
 import ListItem from './listItem';
@@ -80,6 +80,17 @@ const styles = StyleSheet.create({
         justifyContent: 'flex-start',
         borderColor: 'red',
         borderStyle: 'solid'
+    },
+    loading: {
+        position: 'absolute',
+        left: 0,
+        right: 0,
+        top: 0,
+        bottom: 0,
+        opacity: 0.5,
+        backgroundColor: 'black',
+        justifyContent: 'center',
+        alignItems: 'center'
     }
 });
 
@@ -110,6 +121,7 @@ const Attendance = (props) => {
     const [viewReason, setViewReason] = useState(false);
     const [showConfirm, setShowConfirm] = useState(false);
     const [reasonModalData, setReasonModalData] = useState(initReasonData);
+    const [showLoader, setShowLoader] = useState(false);
 
     useEffect(() => {
         console.log(props);
@@ -175,6 +187,7 @@ const Attendance = (props) => {
             saveRecentAttendance({
                 [submitAttendanceResponse.className]: submitAttendanceResponse
             });
+            setShowLoader(false);
         }
     }, [submitAttendanceResponse]);
 
@@ -282,6 +295,7 @@ const Attendance = (props) => {
 
     const replyConfirm = (result) => {
         if (result) {
+            setShowLoader(true);
             submitAttendance();
         }
         setShowConfirm(false);
@@ -295,12 +309,14 @@ const Attendance = (props) => {
         setStudentData(sData);
         setClassAttendance({
             [selectedClass]: {
-                attendanceData: sData
+                attendanceData: sData,
+                className: selectedClass
             }
         });
         saveRecentAttendance({
             [selectedClass]: {
-                attendanceData: sData
+                attendanceData: sData,
+                className: selectedClass
             }
         });
     };
@@ -375,13 +391,14 @@ const Attendance = (props) => {
             ) : (
                 [
                     fetchStudents ? (
-                        <ActivityIndicator size="large" key="studentsLoader" />
+                        <View key="studentsLoader">
+                            <ActivityIndicator size="large" />
+                        </View>
                     ) : (
                         <Text key="no-student">Could not load students</Text>
                     )
                 ]
             )}
-
             {currentStudent ? (
                 <ReasonModal
                     modalData={reasonModalData}
@@ -394,12 +411,20 @@ const Attendance = (props) => {
             ) : (
                 <Text />
             )}
-
             <DialogBox
                 data={CONFIRM_ATTENDANCE}
                 showConfirm={showConfirm}
                 reply={replyConfirm}
             />
+            {showLoader ? (
+                <Portal>
+                    <View style={styles.loading} key="screenLoader">
+                        <ActivityIndicator size="large" />
+                    </View>
+                </Portal>
+            ) : (
+                <Text />
+            )}
         </View>
     );
 };
