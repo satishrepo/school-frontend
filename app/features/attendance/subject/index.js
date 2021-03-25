@@ -1,12 +1,12 @@
-import React, {useState, useEffect, useLayoutEffect} from 'react';
+import React, {useState, useEffect} from 'react';
 import {
-    FlatList,
     // Text,
+    // TouchableOpacity,
+    // Button
+    FlatList,
     SafeAreaView,
     StatusBar,
-    StyleSheet,
-    TouchableOpacity,
-    Button
+    StyleSheet
 } from 'react-native';
 import {withTheme, List} from 'react-native-paper';
 
@@ -31,10 +31,6 @@ const styles = StyleSheet.create({
 });
 
 const Item = ({item, onPress, style}) => (
-    // <TouchableOpacity onPress={onPress} style={[styles.item, style]}>
-    //     <Text style={styles.title}>{item.title}</Text>
-    //     <Text style={styles.status}>{status}</Text>
-    // </TouchableOpacity>
     <List.Item
         key={item.title}
         style={[styles.item, style]}
@@ -42,11 +38,12 @@ const Item = ({item, onPress, style}) => (
         description={item.title}
         onPress={onPress}
         left={(prop) => <List.Icon {...prop} icon="text-subject" />}
+        right={(prop) => <List.Icon {...prop} icon="play" />}
     />
 );
 
 const Subject = (props) => {
-    console.log('props', props);
+    console.log('subject', props);
     const {
         navigation,
         // theme,
@@ -74,9 +71,14 @@ const Subject = (props) => {
         }
     }, [fetchSubjects, fetchSubjectsResponse]);
 
+    const goTo = (screen) => {
+        navigation.navigate(screen);
+    };
+
     const selectSubject = (item) => {
         setSelectedId(item.id);
         setSubject(item.id);
+        goTo('Time');
     };
 
     const renderItem = ({item}) => {
@@ -91,23 +93,19 @@ const Subject = (props) => {
         );
     };
 
-    const goTo = (screen) => {
-        navigation.navigate(screen);
-    };
-
-    useLayoutEffect(() => {
+    /* useLayoutEffect(() => {
         navigation.setOptions({
             headerRight: () => (
                 <TouchableOpacity style={{marginRight: 20}}>
                     <Button
-                        onPress={() => goTo('Attendance')}
+                        onPress={() => goTo('Time')}
                         title="NEXT"
                         disabled={!selectedSubject}
                     />
                 </TouchableOpacity>
             )
         });
-    }, [navigation, selectedSubject]);
+    }, [navigation, selectedSubject]); */
 
     return (
         <SafeAreaView style={styles.container}>

@@ -13,6 +13,7 @@ import {save, get} from '../services/storage';
 import Home from '../features/home';
 import Login from '../store/login/container';
 import Profile from '../features/profile';
+import Subject from '../store/attendance/containers/subject';
 import Time from '../store/attendance/containers/time';
 import Class from '../store/attendance/containers/class';
 import Presence from '../store/attendance/containers/presence';
@@ -38,6 +39,7 @@ const AttendanceStack = () => {
                         headerTitle: 'Choose Class'
                     })}
                 />
+                <Stack.Screen name="Subject" component={Subject} />
                 <Stack.Screen name="Time" component={Time} />
                 <Stack.Screen name="Attendance" component={Presence} />
             </Stack.Navigator>

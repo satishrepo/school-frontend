@@ -49,7 +49,7 @@ const ListItem = (props) => {
             left={(prop) => (
                 <List.Icon
                     {...prop}
-                    icon={item.isSubmitted ? 'check' : 'clock-o'}
+                    icon={item.isSubmitted ? 'check' : 'clock-outline'}
                 />
             )}
             right={(prop) => <List.Icon {...prop} icon="play" />}
@@ -111,7 +111,7 @@ const RecentAttendance = (props) => {
     const onSelectAttendance = (item) => {
         setClassName(item.className);
         if (!item.isSubmitted) {
-            goTo('Time');
+            goTo('Subject');
         } else {
             goTo('Attendance');
         }

@@ -58,16 +58,17 @@ const Class = (props) => {
     const isFocused = useIsFocused();
 
     useEffect(() => {
-        console.log('class', props);
-        // [todo] check if focused condition
-        if (!fetchClassesResponse) {
-            getClasses();
-        }
-        if (selectedClass) {
-            setSelectedId(selectedClass);
-        }
-        if (fetchClassesResponse) {
-            setClassList(fetchClassesResponse);
+        console.log('class', isFocused, props);
+        if (isFocused) {
+            if (!fetchClassesResponse) {
+                getClasses();
+            }
+            if (selectedClass) {
+                setSelectedId(selectedClass);
+            }
+            if (fetchClassesResponse) {
+                setClassList(fetchClassesResponse);
+            }
         }
     }, [isFocused]);
 
@@ -77,23 +78,23 @@ const Class = (props) => {
         }
     }, [fetchClasses]);
 
-    const goTo = (screen) => {
+    const goTo = (screen, className) => {
         let goToSreen = screen;
         if (
             recentAttendances &&
-            recentAttendances[selectedClass] &&
-            recentAttendances[selectedClass].attendanceId
+            recentAttendances[className] &&
+            recentAttendances[className].attendanceId
         ) {
             goToSreen = 'Attendance';
         }
 
-        navigation.navigate(goToSreen, {selectedClass});
+        navigation.navigate(goToSreen, {className});
     };
 
     const selectClass = (item) => {
         setSelectedId(item.id);
         setClassName(item.id);
-        goTo('Time');
+        goTo('Subject', item.id);
     };
 
     const renderItem = ({item}) => {

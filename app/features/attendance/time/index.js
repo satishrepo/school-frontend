@@ -8,7 +8,7 @@ import {
     TouchableOpacity
 } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
-import Subject from '../../../store/attendance/containers/subject';
+// import Subject from '../../../store/attendance/containers/subject';
 
 const styles = StyleSheet.create({
     dateStyle: {
@@ -110,7 +110,7 @@ const Time = (props) => {
                 />
             )}
 
-            <Subject navigation={navigation} />
+            {/* <Subject navigation={navigation} /> */}
         </View>
     );
 };

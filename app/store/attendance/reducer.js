@@ -79,14 +79,16 @@ export default function attendanceReducer(state = initState, action) {
         case types.FETCH_STUDENTS_REQUEST_SUCCESS:
             return {
                 ...state,
+                fetchStudents: false,
                 fetchStudentsResponse: action.response,
-                fetchStudents: false
+                fetchStudentsError: null
             };
         case types.FETCH_STUDENTS_REQUEST_ERROR:
             return {
                 ...state,
+                fetchStudents: false,
                 fetchStudentsError: action.error,
-                loginRequest: false
+                fetchStudentsResponse: null
             };
         case types.SELECTED_ATTENDANCE:
             return {

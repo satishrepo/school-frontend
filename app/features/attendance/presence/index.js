@@ -184,22 +184,6 @@ const Attendance = (props) => {
         }
     }, [fetchStudentsResponse]);
 
-    /* useEffect(() => {
-        console.log('submitAttendanceResponse', submitAttendanceResponse);
-        // save response of submitted attendance object
-        if (submitAttendanceResponse) {
-            console.log('submitAttendanceResponse in');
-            setClassAttendance({
-                [selectedClass]: submitAttendanceResponse
-            });
-            saveRecentAttendance({
-                [submitAttendanceResponse.className]: submitAttendanceResponse
-            });
-            setReadOnly(true);
-            setShowLoader(false);
-        }
-    }, [submitAttendanceResponse]); */
-
     const markAttendance = (item, index) => {
         const modalData = {
             type: 'ATTENDANCE',
