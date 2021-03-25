@@ -1,14 +1,15 @@
-import React, {useState, useEffect, useLayoutEffect} from 'react';
+import React, {useState, useEffect} from 'react';
 import {
     FlatList,
     SafeAreaView,
     StatusBar,
-    StyleSheet,
+    StyleSheet
     // list,
-    TouchableOpacity,
-    Button
+    // TouchableOpacity,
+    // Button
 } from 'react-native';
-import {withTheme, List} from 'react-native-paper';
+import {withTheme, List, Colors} from 'react-native-paper';
+import {useIsFocused} from '@react-navigation/native';
 
 const styles = StyleSheet.create({
     container: {
@@ -19,7 +20,8 @@ const styles = StyleSheet.create({
         padding: 20,
         marginVertical: 8,
         marginHorizontal: 16,
-        borderRadius: 5
+        borderRadius: 5,
+        backgroundColor: Colors.white
     },
     title: {
         fontSize: 20
@@ -30,23 +32,20 @@ const styles = StyleSheet.create({
 });
 
 const Item = ({item, onPress, style, status}) => (
-    // <TouchableOpacity onPress={onPress} style={[styles.item, style]}>
-    //     <Text style={styles.title}>{item.title}</Text>
-    //     <Text style={styles.status}>{status}</Text>
-    // </TouchableOpacity>
     <List.Item
         style={[styles.item, style]}
         title={item.title}
         description={status}
         onPress={onPress}
         left={(prop) => <List.Icon {...prop} icon="account-group" />}
+        right={(prop) => <List.Icon {...prop} icon="play" />}
     />
 );
 
 const Class = (props) => {
     const {
         navigation,
-        theme,
+        // theme,
         fetchClassesResponse,
         selectedClass,
         fetchClasses,
@@ -56,55 +55,27 @@ const Class = (props) => {
     } = props;
     const [selectedId, setSelectedId] = useState(null);
     const [classList, setClassList] = useState([]);
+    const isFocused = useIsFocused();
 
     useEffect(() => {
-        console.log(props);
+        console.log('class', props);
+        // [todo] check if focused condition
         if (!fetchClassesResponse) {
             getClasses();
         }
         if (selectedClass) {
             setSelectedId(selectedClass);
         }
-    }, []);
+        if (fetchClassesResponse) {
+            setClassList(fetchClassesResponse);
+        }
+    }, [isFocused]);
 
     useEffect(() => {
         if (fetchClassesResponse) {
             setClassList(fetchClassesResponse);
         }
     }, [fetchClasses]);
-
-    const selectClass = (item) => {
-        setSelectedId(item.id);
-        setClassName(item.id);
-    };
-
-    const renderItem = ({item}) => {
-        let backgroundColor = item.id === selectedId ? '#3498db' : '#ffffff';
-        let status = '';
-        if (
-            recentAttendances &&
-            recentAttendances[item.id] &&
-            recentAttendances[item.id].attendanceId
-        ) {
-            status = 'Submitted';
-            backgroundColor = theme.colors.green;
-        } else if (
-            recentAttendances &&
-            recentAttendances[item.id] &&
-            recentAttendances[item.id].attendanceData
-        ) {
-            status = 'Saved';
-        }
-
-        return (
-            <Item
-                item={item}
-                onPress={() => selectClass(item)}
-                style={{backgroundColor}}
-                status={status}
-            />
-        );
-    };
 
     const goTo = (screen) => {
         let goToSreen = screen;
@@ -119,7 +90,43 @@ const Class = (props) => {
         navigation.navigate(goToSreen, {selectedClass});
     };
 
-    useLayoutEffect(() => {
+    const selectClass = (item) => {
+        setSelectedId(item.id);
+        setClassName(item.id);
+        goTo('Time');
+    };
+
+    const renderItem = ({item}) => {
+        // let backgroundColor = item.id === selectedId ? '#3498db' : '#ffffff';
+        let backgroundColor = Colors.white;
+        let status = '';
+        if (
+            recentAttendances &&
+            recentAttendances[item.id] &&
+            recentAttendances[item.id].attendanceId
+        ) {
+            status = 'Submitted';
+            backgroundColor = Colors.green500;
+        } else if (
+            recentAttendances &&
+            recentAttendances[item.id] &&
+            recentAttendances[item.id].attendanceData
+        ) {
+            status = 'Saved';
+            backgroundColor = Colors.orange500;
+        }
+
+        return (
+            <Item
+                item={item}
+                onPress={() => selectClass(item)}
+                style={{backgroundColor}}
+                status={status}
+            />
+        );
+    };
+
+    /* useLayoutEffect(() => {
         navigation.setOptions({
             headerRight: () => (
                 <TouchableOpacity style={{marginRight: 20}}>
@@ -131,7 +138,7 @@ const Class = (props) => {
                 </TouchableOpacity>
             )
         });
-    }, [navigation, selectedClass]);
+    }, [navigation, selectedClass]); */
 
     return (
         <SafeAreaView style={styles.container}>

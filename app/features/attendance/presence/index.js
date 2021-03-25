@@ -3,7 +3,8 @@ import {
     StyleSheet,
     Text,
     View,
-    ScrollView,
+    // ScrollView,
+    SafeAreaView,
     ActivityIndicator,
     FlatList,
     TouchableOpacity,
@@ -12,8 +13,11 @@ import {
 import {withTheme, Portal} from 'react-native-paper';
 import ReasonModal from './reasonModal';
 import DialogBox from '../../../components/dialog';
+import Alert from '../../../components/alert';
+// import Snack from '../../../components/snack';
 import ListItem from './listItem';
 import {toTitleCase} from '../../../libs/helper';
+import * as attendanceService from '../../../services/attendance';
 
 const CONFIRM_ATTENDANCE = {
     title: 'Are you sure ?',
@@ -98,10 +102,10 @@ const Attendance = (props) => {
     const {
         getStudents,
         fetchStudentsResponse,
-        submitAttendanceResponse,
+        // saveAttendance,
+        // submitAttendanceResponse,
         selectedClass,
         attendanceDate,
-        saveAttendance,
         setClassAttendance,
         saveRecentAttendance,
         fetchStudents,
@@ -122,6 +126,8 @@ const Attendance = (props) => {
     const [showConfirm, setShowConfirm] = useState(false);
     const [reasonModalData, setReasonModalData] = useState(initReasonData);
     const [showLoader, setShowLoader] = useState(false);
+    const [showAlert, setShowAlert] = useState(false);
+    const [alertData, setAlertData] = useState({});
 
     useEffect(() => {
         console.log(props);
@@ -178,18 +184,21 @@ const Attendance = (props) => {
         }
     }, [fetchStudentsResponse]);
 
-    useEffect(() => {
+    /* useEffect(() => {
+        console.log('submitAttendanceResponse', submitAttendanceResponse);
         // save response of submitted attendance object
         if (submitAttendanceResponse) {
+            console.log('submitAttendanceResponse in');
             setClassAttendance({
                 [selectedClass]: submitAttendanceResponse
             });
             saveRecentAttendance({
                 [submitAttendanceResponse.className]: submitAttendanceResponse
             });
+            setReadOnly(true);
             setShowLoader(false);
         }
-    }, [submitAttendanceResponse]);
+    }, [submitAttendanceResponse]); */
 
     const markAttendance = (item, index) => {
         const modalData = {
@@ -290,7 +299,33 @@ const Attendance = (props) => {
             attendanceDate: attendanceDate || new Date().toISOString(),
             attendanceData: studentData
         };
-        saveAttendance(data);
+        // saveAttendance(data);
+        attendanceService
+            .submitAttendance(data)
+            .then((response) => {
+                if (response.status) {
+                    const attendanceResp = response.data.payload;
+                    setClassAttendance({
+                        [selectedClass]: attendanceResp
+                    });
+                    saveRecentAttendance({
+                        [attendanceResp.className]: attendanceResp
+                    });
+                    setReadOnly(true);
+                    setShowLoader(false);
+                }
+            })
+            .catch((error) => {
+                console.log('ERROR IN SAVE ATTENDANCE: ', error);
+                const alert = {
+                    title: 'Attendance Submit Error',
+                    content:
+                        'There is some problem in network, your data is saved, you can submit later.'
+                };
+                setAlertData(alert);
+                setShowLoader(false);
+                setShowAlert(true);
+            });
     };
 
     const replyConfirm = (result) => {
@@ -299,6 +334,10 @@ const Attendance = (props) => {
             submitAttendance();
         }
         setShowConfirm(false);
+    };
+
+    const replyAlert = () => {
+        setShowAlert(false);
     };
 
     const onUpdateCallback = (updatedObject) => {
@@ -379,7 +418,7 @@ const Attendance = (props) => {
                 </Text>
             </View>
             {studentData.length ? (
-                <ScrollView style={styles.userListCont}>
+                <SafeAreaView style={styles.userListCont}>
                     <FlatList
                         style={styles.flatList}
                         data={studentData}
@@ -387,7 +426,7 @@ const Attendance = (props) => {
                         keyExtractor={(item) => item.rollNo.toString()}
                         // numColumns="2"
                     />
-                </ScrollView>
+                </SafeAreaView>
             ) : (
                 [
                     fetchStudents ? (
@@ -411,11 +450,6 @@ const Attendance = (props) => {
             ) : (
                 <Text />
             )}
-            <DialogBox
-                data={CONFIRM_ATTENDANCE}
-                showConfirm={showConfirm}
-                reply={replyConfirm}
-            />
             {showLoader ? (
                 <Portal>
                     <View style={styles.loading} key="screenLoader">
@@ -425,6 +459,17 @@ const Attendance = (props) => {
             ) : (
                 <Text />
             )}
+            <DialogBox
+                data={CONFIRM_ATTENDANCE}
+                showConfirm={showConfirm}
+                reply={replyConfirm}
+            />
+            <Alert data={alertData} showAlert={showAlert} reply={replyAlert} />
+            {/* <Snack
+                data={{text: 'test', buttonLabel: 'OK'}}
+                showSnack={showAlert}
+                reply={replyAlert}
+            /> */}
         </View>
     );
 };

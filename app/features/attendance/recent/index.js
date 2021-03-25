@@ -1,15 +1,17 @@
 import React, {useEffect, useState, useLayoutEffect} from 'react';
 import {
+    // Text,
+    // Pressable,
     View,
     FlatList,
-    Pressable,
     TouchableOpacity,
     Button,
-    Text,
     StyleSheet
 } from 'react-native';
-import {withTheme} from 'react-native-paper';
-import Icon from 'react-native-vector-icons/FontAwesome';
+import {withTheme, List, Colors} from 'react-native-paper';
+// import Icon from 'react-native-vector-icons/FontAwesome';
+import {useIsFocused} from '@react-navigation/native';
+import {toTitleCase} from '../../../libs/helper';
 
 const styles = StyleSheet.create({
     container: {
@@ -37,29 +39,42 @@ const styles = StyleSheet.create({
 });
 
 const ListItem = (props) => {
-    const {onPress, item, backgroundColor} = props;
+    const {onPress, item, style} = props;
     return (
-        <Pressable
-            // disabled={disabled}
-            style={[styles.item, {backgroundColor}]}
+        <List.Item
+            style={[styles.item, style]}
+            title={toTitleCase(item.className)}
+            description={item.isSubmitted ? 'Submitted' : 'Saved'}
             onPress={() => onPress(item)}
-        >
-            <Text style={styles.itemText}>
-                {' '}
-                <Icon
-                    name={item.isSubmitted ? 'check' : 'clock-o'}
-                    size={30}
-                />{' '}
-                {item.className}
-            </Text>
-        </Pressable>
+            left={(prop) => (
+                <List.Icon
+                    {...prop}
+                    icon={item.isSubmitted ? 'check' : 'clock-o'}
+                />
+            )}
+            right={(prop) => <List.Icon {...prop} icon="play" />}
+        />
+        // <Pressable
+        //     style={[styles.item, {backgroundColor}]}
+        //     onPress={() => onPress(item)}
+        // >
+        //     <Text style={styles.itemText}>
+        //         {' '}
+        //         <Icon
+        //             name={item.isSubmitted ? 'check' : 'clock-o'}
+        //             size={30}
+        //         />{' '}
+        //         {item.className}
+        //     </Text>
+        // </Pressable>
     );
 };
 
 const RecentAttendance = (props) => {
-    console.log(props);
+    console.log('recent', props);
     const {navigation, recentAttendances, setClassName, theme} = props;
     const [recentAttendanceList, setRecentAttendanceList] = useState([]);
+    const isFocused = useIsFocused();
 
     useEffect(() => {
         if (recentAttendances) {
@@ -71,7 +86,7 @@ const RecentAttendance = (props) => {
             });
             setRecentAttendanceList(list);
         }
-    }, []);
+    }, [isFocused]);
 
     const goTo = (screen) => {
         navigation.navigate(screen);
@@ -94,9 +109,8 @@ const RecentAttendance = (props) => {
     }, [navigation]);
 
     const onSelectAttendance = (item) => {
-        console.log('onSelectAttendance', item);
+        setClassName(item.className);
         if (!item.isSubmitted) {
-            setClassName(item.className);
             goTo('Time');
         } else {
             goTo('Attendance');
@@ -105,14 +119,14 @@ const RecentAttendance = (props) => {
 
     const renderItem = ({item}) => {
         const backgroundColor = item.isSubmitted
-            ? theme.colors.green
-            : theme.colors.primary;
+            ? Colors.green500
+            : Colors.orange500;
         // item.index = index;
         return (
             <ListItem
                 item={item}
                 onPress={onSelectAttendance}
-                backgroundColor={backgroundColor}
+                style={{backgroundColor}}
                 // showReason={showReason}
                 // disabled={readOnly}
             />

@@ -8,7 +8,7 @@ axios.interceptors.request.use(
 
         // req.headers['Access-Control-Allow-Origin'] = '*'
         if (!req.url.includes('/login')) {
-            req.headers.Authorization = authToken;
+            req.headers.Authorization = `Bearer ${authToken}`;
         }
         return req;
     },

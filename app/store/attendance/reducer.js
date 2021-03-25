@@ -10,9 +10,9 @@ const initState = {
     fetchStudentsResponse: null,
     fetchStudentsError: null,
     currentAttendance: null,
-    submitAttendance: false,
-    submitAttendanceResponse: null,
-    submitAttendanceError: null,
+    // submitAttendance: false,
+    // submitAttendanceResponse: null,
+    // submitAttendanceError: null,
     recentAttendances: null,
     fetchSubjects: false,
     fetchSubjectsResponse: null,
@@ -93,23 +93,29 @@ export default function attendanceReducer(state = initState, action) {
                 ...state,
                 currentAttendance: action.attendanceData
             };
+        /*
         case types.SUBMIT_ATTENDANCE_REQUEST:
             return {
                 ...state,
-                submitAttendance: true
+                submitAttendance: true,
+                submitAttendanceError: null,
+                submitAttendanceResponse: null
             };
-        case types.SUBMIT_ATTENDANCE_REQUEST_SUCCESS:
+         case types.SUBMIT_ATTENDANCE_REQUEST_SUCCESS:
             return {
                 ...state,
-                submitAttendanceResponse: action.response,
-                submitAttendance: false
+                submitAttendance: false,
+                submitAttendanceError: null,
+                submitAttendanceResponse: action.response
             };
         case types.SUBMIT_ATTENDANCE_REQUEST_ERROR:
             return {
                 ...state,
-                submitAttendanceError: action.error,
-                submitAttendance: false
+                submitAttendance: false,
+                submitAttendanceResponse: null,
+                submitAttendanceError: action.error
             };
+        */
         case types.SET_RECENT_ATTENDANCES:
             return {
                 ...state,

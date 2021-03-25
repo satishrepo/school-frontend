@@ -63,7 +63,7 @@ const selectedAttendance = (attendanceData) => ({
     attendanceData
 });
 
-const submitAttendance = () => ({
+/* const submitAttendance = () => ({
     type: type.SUBMIT_ATTENDANCE_REQUEST
 });
 
@@ -75,7 +75,7 @@ const submitAttendanceSuccess = (response) => ({
 const submitAttendanceError = (error) => ({
     type: type.SUBMIT_ATTENDANCE_REQUEST_ERROR,
     error
-});
+}); */
 
 const setRecentAttendances = (attendanceData) => ({
     type: type.SET_RECENT_ATTENDANCES,
@@ -153,7 +153,7 @@ export const setClassAttendance = (attendanceData) => {
     };
 };
 
-export const saveAttendance = (attendanceData) => {
+/* export const saveAttendance = (attendanceData) => {
     return (dispatch) => {
         dispatch(submitAttendance());
         attendanceService
@@ -166,7 +166,7 @@ export const saveAttendance = (attendanceData) => {
                 dispatch(submitAttendanceError(error));
             });
     };
-};
+}; */
 
 export const saveRecentAttendance = (attendanceData) => {
     return (dispatch) => {

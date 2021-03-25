@@ -6,7 +6,7 @@ import {
     setAttendanceDateTime,
     getStudents,
     setClassAttendance,
-    saveAttendance,
+    // saveAttendance,
     saveRecentAttendance
 } from '../actions';
 import Presence from '../../../features/attendance/presence';
@@ -22,10 +22,10 @@ const mapStateToProps = (state) => {
         fetchStudentsResponse: state.attendanceReducer.fetchStudentsResponse,
         fetchStudentsError: state.attendanceReducer.fetchStudentsError,
         currentAttendance: state.attendanceReducer.currentAttendance,
-        submitAttendance: state.attendanceReducer.submitAttendance,
-        submitAttendanceResponse:
-            state.attendanceReducer.submitAttendanceResponse,
-        submitAttendanceError: state.attendanceReducer.submitAttendanceError,
+        // submitAttendance: state.attendanceReducer.submitAttendance,
+        // submitAttendanceResponse:
+        //     state.attendanceReducer.submitAttendanceResponse,
+        // submitAttendanceError: state.attendanceReducer.submitAttendanceError,
         recentAttendances: state.attendanceReducer.recentAttendances,
         selectedSubject: state.attendanceReducer.selectedSubject
     };
@@ -39,7 +39,7 @@ const mapDispatchToProps = (dispatch) =>
             setAttendanceDateTime,
             getStudents,
             setClassAttendance,
-            saveAttendance,
+            // saveAttendance,
             saveRecentAttendance
         },
         dispatch
