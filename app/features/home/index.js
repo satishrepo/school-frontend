@@ -1,64 +1,77 @@
-import React, {useState} from 'react';
-import {View, Button, TextInput} from 'react-native';
-import http from '../../services/http';
+import React from 'react';
+import {View, Text, StyleSheet, SafeAreaView} from 'react-native';
+import {Colors, Surface} from 'react-native-paper';
+import Icon from 'react-native-vector-icons/FontAwesome';
 
-const Home = ({navigation}) => {
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
+const styles = StyleSheet.create({
+    welcomeText: {
+        fontSize: 20,
+        textAlign: 'center',
+        color: Colors.deepPurple500,
+        padding: 20
+    },
+    surfaceCont: {
+        display: 'flex',
+        flexDirection: 'row',
+        flexWrap: 'wrap',
+        justifyContent: 'space-between',
+        padding: 20
+    },
+    surface: {
+        elevation: 20,
+        width: '47%',
+        // paddingBottom: '18%',
+        // paddingTop: '5%',
+        height: 150,
+        marginBottom: '5%',
+        borderRadius: 5,
+        textAlign: 'center'
+    },
+    surfaceText: {
+        fontSize: 20,
+        fontWeight: 900,
+        color: Colors.indigo300
+    },
+    icon: {
+        marginTop: 20,
+        marginBottom: 5,
+        boxShadow: 2,
+        color: Colors.blue300
+    }
+});
 
-    const login = () => {
-        console.log(email, password);
-
-        if (email && password) {
-            http.post('http://localhost:3000', {email, password})
-                .then((response) => {
-                    navigation.navigate('Class');
-                    console.log(response);
-                })
-                .catch((error) => {
-                    console.log(error);
-                });
-        }
-    };
-
+const Home = () => {
     return (
-        <View style={{padding: 10}}>
-            {/* <Text>Hey! Welcome to home page</Text> */}
-            <TextInput
-                onChangeText={(text) => setEmail(text)}
-                value={email}
-                placeholder="Enter Email"
-                placeholderTextColor="blue"
-                style={{
-                    height: 40,
-                    borderColor: 'black',
-                    borderBottomWidth: 1,
-                    marginBottom: 5
-                }}
-            />
-            <TextInput
-                onChangeText={(text) => setPassword(text)}
-                value={password}
-                secureTextEntry
-                placeholder="Enter Password"
-                placeholderTextColor="blue"
-                style={{
-                    height: 40,
-                    borderColor: 'black',
-                    borderBottomWidth: 1,
-                    marginBottom: 5
-                }}
-            />
-            <Button
-                title="Login"
-                onPress={() => login()}
-                style={{margin: 10}}
-            />
-            {/* <Button 
-                title="Visit Profile"
-                onPress={() => navigation.navigate('Profile', {name: 'satish'})} 
-            /> */}
-        </View>
+        <SafeAreaView>
+            <View>
+                <Text style={styles.welcomeText}>
+                    Hey! Welcome to home page
+                </Text>
+            </View>
+            <View style={styles.surfaceCont}>
+                <Surface style={styles.surface}>
+                    <Icon
+                        name="users"
+                        size={75}
+                        style={[styles.icon, {color: Colors.red300}]}
+                    />
+                    <Text style={styles.surfaceText}>Attendance</Text>
+                </Surface>
+                <Surface style={styles.surface}>
+                    <Icon name="check-square-o" size={75} style={styles.icon} />
+                    <Text style={styles.surfaceText}>Notes</Text>
+                </Surface>
+                <Surface style={styles.surface}>
+                    <Text style={styles.surfaceText}>Notes</Text>
+                </Surface>
+                <Surface style={styles.surface}>
+                    <Text style={styles.surfaceText}>Notes</Text>
+                </Surface>
+                <Surface style={styles.surface}>
+                    <Text style={styles.surfaceText}>Notes</Text>
+                </Surface>
+            </View>
+        </SafeAreaView>
     );
 };
 

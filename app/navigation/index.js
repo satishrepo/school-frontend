@@ -21,6 +21,21 @@ import RecentAttendance from '../store/attendance/containers/recentAttendance';
 
 const Stack = createStackNavigator();
 
+const HomeStack = () => {
+    return (
+        <NavigationContainer>
+            <Stack.Navigator>
+                <Stack.Screen
+                    name="Home"
+                    component={Home}
+                    options={() => ({
+                        headerTitle: 'Home'
+                    })}
+                />
+            </Stack.Navigator>
+        </NavigationContainer>
+    );
+};
 const AttendanceStack = () => {
     return (
         <NavigationContainer>
@@ -89,7 +104,7 @@ const NavConfig = () => {
     ]);
 
     const renderScene = BottomNavigation.SceneMap({
-        home: Home,
+        home: HomeStack,
         attendance: AttendanceStack,
         profile: Profile
     });
