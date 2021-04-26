@@ -1,5 +1,11 @@
-import React from 'react';
-import {View, Text, StyleSheet, SafeAreaView} from 'react-native';
+import React, {useEffect} from 'react';
+import {
+    View,
+    Text,
+    StyleSheet,
+    SafeAreaView,
+    TouchableOpacity
+} from 'react-native';
 import {Colors, Surface} from 'react-native-paper';
 import Icon from 'react-native-vector-icons/FontAwesome';
 
@@ -19,28 +25,38 @@ const styles = StyleSheet.create({
     },
     surface: {
         elevation: 20,
-        width: '47%',
-        // paddingBottom: '18%',
-        // paddingTop: '5%',
+        // width: '47%',
         height: 150,
-        marginBottom: '5%',
+        // marginBottom: '5%',
         borderRadius: 5,
-        textAlign: 'center'
+        textAlign: 'center',
+        alignItems: 'center',
+        justifyContent: 'center'
     },
     surfaceText: {
         fontSize: 20,
-        fontWeight: 900,
+        fontWeight: '900',
         color: Colors.indigo300
     },
     icon: {
         marginTop: 20,
         marginBottom: 5,
-        boxShadow: 2,
         color: Colors.blue300
+    },
+    touchArea: {
+        width: '47%',
+        marginBottom: '5%'
     }
 });
 
-const Home = () => {
+const Home = (props) => {
+    console.log('home props', props);
+
+    const {navigation} = props;
+
+    const gotTo = (tab, screen) => {
+        navigation.navigate(tab, {screen});
+    };
     return (
         <SafeAreaView>
             <View>
@@ -49,27 +65,48 @@ const Home = () => {
                 </Text>
             </View>
             <View style={styles.surfaceCont}>
-                <Surface style={styles.surface}>
-                    <Icon
-                        name="users"
-                        size={75}
-                        style={[styles.icon, {color: Colors.red300}]}
-                    />
-                    <Text style={styles.surfaceText}>Attendance</Text>
-                </Surface>
-                <Surface style={styles.surface}>
-                    <Icon name="check-square-o" size={75} style={styles.icon} />
-                    <Text style={styles.surfaceText}>Notes</Text>
-                </Surface>
-                <Surface style={styles.surface}>
-                    <Text style={styles.surfaceText}>Notes</Text>
-                </Surface>
-                <Surface style={styles.surface}>
-                    <Text style={styles.surfaceText}>Notes</Text>
-                </Surface>
-                <Surface style={styles.surface}>
-                    <Text style={styles.surfaceText}>Notes</Text>
-                </Surface>
+                <TouchableOpacity
+                    style={styles.touchArea}
+                    onPress={() => gotTo('Attendance', 'RecentAttendance')}
+                >
+                    <Surface style={styles.surface}>
+                        <Icon
+                            name="users"
+                            size={75}
+                            style={[styles.icon, {color: Colors.red300}]}
+                        />
+                        <Text style={styles.surfaceText}>Attendance</Text>
+                    </Surface>
+                </TouchableOpacity>
+                <TouchableOpacity
+                    style={styles.touchArea}
+                    onPress={() => gotTo('Attendance', 'RecentAttendance')}
+                >
+                    <Surface style={styles.surface}>
+                        <Icon
+                            name="check-square-o"
+                            size={75}
+                            style={styles.icon}
+                        />
+                        <Text style={styles.surfaceText}>Notes</Text>
+                    </Surface>
+                </TouchableOpacity>
+                <TouchableOpacity
+                    style={styles.touchArea}
+                    onPress={() => gotTo('Attendance', 'RecentAttendance')}
+                >
+                    <Surface style={styles.surface}>
+                        <Text style={styles.surfaceText}>Notes</Text>
+                    </Surface>
+                </TouchableOpacity>
+                <TouchableOpacity
+                    style={styles.touchArea}
+                    onPress={() => gotTo('Attendance', 'RecentAttendance')}
+                >
+                    <Surface style={styles.surface}>
+                        <Text style={styles.surfaceText}>Notes</Text>
+                    </Surface>
+                </TouchableOpacity>
             </View>
         </SafeAreaView>
     );

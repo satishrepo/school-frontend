@@ -14,11 +14,12 @@ const mapStateToProps = (state) => {
         // fetchClasses: state.attendanceReducer.fetchClasses,
         // fetchClassesResponse: state.attendanceReducer.fetchClassesResponse,
         // fetchClassesError: state.attendanceReducer.fetchClassesError,
-        selectedClass: state.attendanceReducer.selectedClass,
-        attendanceDateTime: state.attendanceReducer.attendanceDateTime,
         // fetchStudents: state.attendanceReducer.fetchStudents,
         // fetchStudentsResponse: state.attendanceReducer.fetchStudentsResponse,
         // fetchStudentsError: state.attendanceReducer.fetchStudentsError,
+        selectedClass: state.attendanceReducer.selectedClass,
+        selectedSubject: state.attendanceReducer.selectedSubject,
+        attendanceDateTime: state.attendanceReducer.attendanceDateTime,
         currentAttendance: state.attendanceReducer.currentAttendance
     };
 };

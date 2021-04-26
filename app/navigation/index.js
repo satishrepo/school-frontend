@@ -4,7 +4,10 @@ import {useSelector} from 'react-redux';
 
 import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
-import {BottomNavigation} from 'react-native-paper';
+// import {BottomNavigation} from 'react-native-paper';
+import {createMaterialBottomTabNavigator} from '@react-navigation/material-bottom-tabs';
+import {MaterialCommunityIcons} from '@expo/vector-icons';
+// import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 // import { createDrawerNavigator } from '@react-navigation/drawer';
 // const Drawer = createDrawerNavigator();
 
@@ -19,66 +22,64 @@ import Class from '../store/attendance/containers/class';
 import Presence from '../store/attendance/containers/presence';
 import RecentAttendance from '../store/attendance/containers/recentAttendance';
 
-const Stack = createStackNavigator();
+const Tab = createMaterialBottomTabNavigator();
+const HomeStack = createStackNavigator();
+const AttendanceStack = createStackNavigator();
+const AuthStack = createStackNavigator();
 
-const HomeStack = () => {
+const HomeStackScreen = () => {
     return (
-        <NavigationContainer>
-            <Stack.Navigator>
-                <Stack.Screen
-                    name="Home"
-                    component={Home}
-                    options={() => ({
-                        headerTitle: 'Home'
-                    })}
-                />
-            </Stack.Navigator>
-        </NavigationContainer>
+        <HomeStack.Navigator>
+            <HomeStack.Screen
+                name="Home"
+                component={Home}
+                options={() => ({
+                    headerTitle: 'Home'
+                })}
+            />
+        </HomeStack.Navigator>
     );
 };
-const AttendanceStack = () => {
+const AttendanceStackScreen = () => {
     return (
-        <NavigationContainer>
-            <Stack.Navigator>
-                <Stack.Screen
-                    name="RecentAttendance"
-                    component={RecentAttendance}
-                    options={() => ({
-                        headerTitle: "Today's Attendance"
-                    })}
-                />
-                <Stack.Screen
-                    name="Class"
-                    component={Class}
-                    options={() => ({
-                        headerTitle: 'Choose Class'
-                    })}
-                />
-                <Stack.Screen name="Subject" component={Subject} />
-                <Stack.Screen name="Time" component={Time} />
-                <Stack.Screen name="Attendance" component={Presence} />
-            </Stack.Navigator>
-        </NavigationContainer>
+        <AttendanceStack.Navigator>
+            <AttendanceStack.Screen
+                name="RecentAttendance"
+                component={RecentAttendance}
+                options={() => ({
+                    headerTitle: "Today's Attendance"
+                })}
+            />
+            <AttendanceStack.Screen
+                name="Class"
+                component={Class}
+                options={() => ({
+                    headerTitle: 'Choose Class'
+                })}
+            />
+            <AttendanceStack.Screen name="Subject" component={Subject} />
+            <AttendanceStack.Screen name="Time" component={Time} />
+            <AttendanceStack.Screen name="Attendance" component={Presence} />
+        </AttendanceStack.Navigator>
     );
 };
 
-const AuthStack = () => {
+const AuthStackScreen = () => {
     return (
         <NavigationContainer>
-            <Stack.Navigator>
-                <Stack.Screen
+            <AuthStack.Navigator>
+                <AuthStack.Screen
                     name="Login"
                     component={Login}
                     options={{title: 'Login'}}
                 />
-            </Stack.Navigator>
+            </AuthStack.Navigator>
         </NavigationContainer>
     );
 };
 
 const NavConfig = () => {
     const loggedUser = useSelector((state) => state.loginReducer.loggedUser);
-    const [index, setIndex] = useState(0);
     const [savedUser, setSavedUser] = useState(null);
 
     useEffect(() => {
@@ -97,26 +98,55 @@ const NavConfig = () => {
 
     const isLoggedIn = !!(savedUser || (loggedUser && loggedUser.user_id));
 
-    const [routes] = useState([
-        {key: 'home', title: 'Home', icon: 'home'},
-        {key: 'attendance', title: 'Attendance', icon: 'album'},
-        {key: 'profile', title: 'Profile', icon: 'history'}
-    ]);
-
-    const renderScene = BottomNavigation.SceneMap({
-        home: HomeStack,
-        attendance: AttendanceStack,
-        profile: Profile
-    });
-
     return isLoggedIn ? (
-        <BottomNavigation
-            navigationState={{index, routes}}
-            onIndexChange={setIndex}
-            renderScene={renderScene}
-        />
+        <NavigationContainer>
+            <Tab.Navigator>
+                <Tab.Screen
+                    name="Home"
+                    component={HomeStackScreen}
+                    options={{
+                        tabBarLabel: 'Home',
+                        tabBarIcon: ({color}) => (
+                            <MaterialCommunityIcons
+                                name="home"
+                                color={color}
+                                size={26}
+                            />
+                        )
+                    }}
+                />
+                <Tab.Screen
+                    name="Attendance"
+                    component={AttendanceStackScreen}
+                    options={{
+                        tabBarLabel: 'Attendance',
+                        tabBarIcon: ({color}) => (
+                            <MaterialCommunityIcons
+                                name="account-group"
+                                color={color}
+                                size={26}
+                            />
+                        )
+                    }}
+                />
+                <Tab.Screen
+                    name="Profile"
+                    component={Profile}
+                    options={{
+                        tabBarLabel: 'Profile',
+                        tabBarIcon: ({color}) => (
+                            <MaterialCommunityIcons
+                                name="account"
+                                color={color}
+                                size={26}
+                            />
+                        )
+                    }}
+                />
+            </Tab.Navigator>
+        </NavigationContainer>
     ) : (
-        AuthStack()
+        AuthStackScreen()
     );
 };
 

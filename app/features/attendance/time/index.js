@@ -1,14 +1,16 @@
-import React, {useState, useLayoutEffect} from 'react';
+import React, {useState} from 'react';
 import {
-    StyleSheet,
-    Text,
-    View,
-    Button,
+    // TouchableOpacity,
+    // Text,
     Platform,
-    TouchableOpacity
+    StyleSheet,
+    View
 } from 'react-native';
+import {List, Colors, Button} from 'react-native-paper';
 import DateTimePicker from '@react-native-community/datetimepicker';
 // import Subject from '../../../store/attendance/containers/subject';
+import {toTitleCase} from '../../../libs/helper';
+import {ButtonStyle} from '../../../styles';
 
 const styles = StyleSheet.create({
     dateStyle: {
@@ -24,23 +26,38 @@ const styles = StyleSheet.create({
         backgroundColor: '#00D043',
         textAlign: 'center',
         paddingVertical: 10
+    },
+    item: {
+        backgroundColor: Colors.white,
+        paddingTop: 20,
+        paddingBottom: 20,
+        margin: 10,
+        borderRadius: 5
+    },
+    btnGroupCont: {
+        display: 'flex',
+        flexDirection: 'row',
+        justifyContent: 'space-evenly',
+        marginTop: 20
     }
 });
 
 const Time = (props) => {
-    const {navigation, setAttendanceDateTime, selectedClass} = props;
+    const {
+        navigation,
+        setAttendanceDateTime,
+        selectedClass,
+        selectedSubject
+    } = props;
     const [date, setDate] = useState(new Date());
     const [mode, setMode] = useState('time');
     const [show, setShow] = useState(true);
 
     const goTo = (screen) => {
-        navigation.navigate(screen, {
-            selectedClass,
-            selectedDate: date
-        });
+        navigation.navigate(screen);
     };
 
-    useLayoutEffect(() => {
+    /* useLayoutEffect(() => {
         navigation.setOptions({
             headerRight: () => (
                 <TouchableOpacity style={{marginRight: 20}}>
@@ -48,7 +65,7 @@ const Time = (props) => {
                 </TouchableOpacity>
             )
         });
-    }, [navigation]);
+    }, [navigation]); */
 
     const onChange = (event, selectedDate) => {
         const currentDate = selectedDate || date;
@@ -88,16 +105,62 @@ const Time = (props) => {
 
     return (
         <View>
-            {/* <View>
-                <Button onPress={showDatepicker} title="Show date picker!" />
-            </View> */}
+            {/* 
+                <View>
+                    <Button onPress={showDatepicker} title="Show date picker!" />
+                </View> 
+                <View>
+                    <Button onPress={showTimepicker} title="Select Time" />
+                </View>
+            */}
             <View>
-                <Button onPress={showTimepicker} title="Select Time" />
-            </View>
-            <View>
-                <Text style={styles.dateStyle}>{selectedClass}</Text>
-                <Text style={styles.dateStyle}>{formatDate(date)}</Text>
-                <Text style={styles.timeStyle}>{formatTime(date)}</Text>
+                <List.Item
+                    key="selectedClass"
+                    style={[styles.item]}
+                    title={toTitleCase(selectedClass)}
+                    description={toTitleCase(selectedClass)}
+                    onPress={() => goTo('Class')}
+                    left={(prop) => (
+                        <List.Icon {...prop} icon="account-group" />
+                    )}
+                    // right={(prop) => <List.Icon {...prop} icon="play" />}
+                />
+                <List.Item
+                    key="selectedSubject"
+                    style={[styles.item]}
+                    title={toTitleCase(selectedSubject)}
+                    description={toTitleCase(selectedSubject)}
+                    onPress={() => goTo('Subject')}
+                    left={(prop) => <List.Icon {...prop} icon="text-subject" />}
+                    // right={(prop) => <List.Icon {...prop} icon="play" />}
+                />
+                <List.Item
+                    key="selectedTime"
+                    style={[styles.item]}
+                    title={formatDate(date)}
+                    description={formatTime(date)}
+                    // onPress={() => goTo('Subject')}
+                    left={(prop) => <List.Icon {...prop} icon="clock" />}
+                    // right={(prop) => <List.Icon {...prop} icon="play" />}
+                />
+                <View style={styles.btnGroupCont}>
+                    <Button
+                        icon="clock"
+                        style={ButtonStyle.primary}
+                        labelStyle={{color: Colors.black}}
+                        onPress={showTimepicker}
+                    >
+                        Change Time
+                    </Button>
+                    <Button
+                        icon="telegram"
+                        style={ButtonStyle.primary}
+                        labelStyle={{color: Colors.black}}
+                        onPress={() => goTo('Attendance')}
+                    >
+                        NEXT
+                    </Button>
+                </View>
             </View>
             {show && (
                 <DateTimePicker

@@ -1,8 +1,15 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {StyleSheet, Text, View, Pressable} from 'react-native';
 
-import {withTheme, Avatar, Chip, IconButton, Colors} from 'react-native-paper';
-
+import {
+    withTheme,
+    Avatar,
+    Chip,
+    IconButton,
+    Colors,
+    Switch
+} from 'react-native-paper';
+import Icon from 'react-native-vector-icons/FontAwesome';
 import {toTitleCase} from '../../../libs/helper';
 
 const styles = StyleSheet.create({
@@ -64,11 +71,37 @@ const styles = StyleSheet.create({
         justifyContent: 'flex-start',
         borderColor: 'red',
         borderStyle: 'solid'
+    },
+    actionArea: {
+        display: 'flex',
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        paddingVertical: 2,
+        paddingHorizontal: 10
+    },
+    flexRow: {
+        display: 'flex',
+        flexDirection: 'row',
+        justifyContent: 'space-evenly'
+    },
+    actionText: {
+        alignItems: 'center',
+        textAlign: 'center',
+        fontSize: 20
+    },
+    actionsCont: {
+        // marginHorizontal: 15,
+    },
+    indicIcon: {
+        paddingVertical: 2,
+        paddingHorizontal: 10
     }
 });
 
 const ListItem = (props) => {
     const {theme, item, onPress, showReason, disabled} = props;
+
+    const [showActions, setShowActions] = useState(false);
 
     const attendanceBackground = item.isPresent
         ? theme.colors.green
@@ -79,90 +112,176 @@ const ListItem = (props) => {
         : theme.colors.red;
 
     const showModal = (type) => {
+        console.log('type', type);
         onPress(item, item.index, type);
     };
 
     return (
-        <Pressable
-            disabled={disabled}
-            style={[styles.userList]}
-            onPress={() => showModal('ATTENDANCE')}
-        >
-            <Avatar.Image
-                size={60}
-                style={[styles.avatar]}
-                source={{uri: 'https://picsum.photos/200'}}
-            />
-            <View>
-                <Text style={styles.name}>{toTitleCase(item.name)} </Text>
-                <View style={styles.chipCont}>
-                    <Text style={styles.rollNo}>#{item.rollNo}</Text>
-                    <Text>
-                        <Chip
-                            disabled={disabled}
-                            icon={item.isPresent ? 'check' : 'cancel'}
-                            style={{backgroundColor: attendanceBackground}}
-                            onPress={() => showModal('ATTENDANCE')}
-                        >
-                            {item.isPresent ? 'Present' : 'Absent'}
-                        </Chip>
-
-                        {!item.isPresent && item.absentReason ? (
-                            <IconButton
-                                icon="eye"
-                                color={Colors.red500}
+        <View>
+            <Pressable
+                disabled={disabled}
+                style={[styles.userList]}
+                // onPress={() => showModal('ATTENDANCE')}
+                onPress={() => setShowActions(!showActions)}
+            >
+                <Avatar.Image
+                    size={60}
+                    style={[styles.avatar]}
+                    source={{uri: 'https://picsum.photos/200'}}
+                />
+                <View>
+                    <Text style={styles.name}>{toTitleCase(item.name)} </Text>
+                    <View style={styles.chipCont}>
+                        <Text style={styles.rollNo}>#{item.rollNo}</Text>
+                        <Text>
+                            <Icon
+                                name="users"
                                 size={20}
-                                onPress={(e) =>
-                                    showReason(e, item, 'ATTENDANCE')
-                                }
+                                style={[styles.indicIcon,
+                                    {
+                                        color: item.isPresent
+                                            ? Colors.green500
+                                            : Colors.red500
+                                    }
+                                ]}
                             />
-                        ) : (
-                            ''
-                        )}
-                    </Text>
-                    <Text>
-                        <Chip
-                            disabled={disabled}
-                            icon={item.isHomework ? 'check' : 'cancel'}
-                            style={{backgroundColor: homeWorkBackground}}
-                            onPress={() => showModal('HOMEWORK')}
-                        >
-                            {item.isHomework ? 'Done' : 'Not Done'}
-                        </Chip>
+                            {/* <Chip
+                                disabled={disabled}
+                                icon={item.isPresent ? 'check' : 'cancel'}
+                                style={{backgroundColor: attendanceBackground}}
+                                onPress={() => showModal('ATTENDANCE')}
+                            >
+                                {item.isPresent ? 'Present' : 'Absent'}
+                            </Chip> */}
 
-                        {!item.isHomework && item.homeworkReason ? (
-                            <IconButton
-                                icon="eye"
-                                color={Colors.red500}
+                            {/* {!item.isPresent && item.absentReason ? (
+                                <IconButton
+                                    icon="eye"
+                                    color={Colors.red500}
+                                    size={20}
+                                    onPress={(e) =>
+                                        showReason(e, item, 'ATTENDANCE')
+                                    }
+                                />
+                            ) : (
+                                ''
+                            )} */}
+                            {/* <Switch
+                                disabled={disabled}
+                                value={item.isPresent}
+                                onValueChange={() => showModal('ATTENDANCE')}
+                            /> */}
+                        </Text>
+                        <Text>
+                            <Icon
+                                name="file-text-o"
                                 size={20}
-                                onPress={(e) => showReason(e, item, 'HOMEWORK')}
+                                style={[styles.indicIcon,
+                                    {
+                                        color: item.isHomework
+                                            ? Colors.green500
+                                            : Colors.red500
+                                    }
+                                ]}
                             />
-                        ) : (
-                            ''
-                        )}
-                    </Text>
+                            {/* <Chip
+                                disabled={disabled}
+                                icon={item.isHomework ? 'check' : 'cancel'}
+                                style={{backgroundColor: homeWorkBackground}}
+                                onPress={() => showModal('HOMEWORK')}
+                            >
+                                {item.isHomework ? 'Done' : 'Not Done'}
+                            </Chip> */}
+
+                            {/* {!item.isHomework && item.homeworkReason ? (
+                                <IconButton
+                                    icon="eye"
+                                    color={Colors.red500}
+                                    size={20}
+                                    onPress={(e) =>
+                                        showReason(e, item, 'HOMEWORK')
+                                    }
+                                />
+                            ) : (
+                                ''
+                            )} */}
+
+                            {/* <Switch
+                                disabled={disabled}
+                                value={item.isHomework}
+                                onValueChange={() => showModal('HOMEWORK')}
+                            /> */}
+                        </Text>
+                    </View>
                 </View>
-            </View>
-        </Pressable>
-
-        // <Card
-        //     style={[styles.card, {backgroundColor}]}
-        //     onPress={onPress} >
-        //     <Card.Cover
-        //         source={{ uri: 'https://picsum.photos/700' }}
-        //         resizeMode={`cover`}
-        //         style={{flexDirection: 'column', height: '70%'}}/>
-        //     <Card.Content>
-        //         <Title>#{item.rollNo}</Title>
-        //         <Paragraph>{item.name.toUpperCase()}</Paragraph>
-        //     </Card.Content>
-
-        /* <Card.Actions> */
-        /* <Button>Cancel</Button>
-                    <Button>Ok</Button> */
-        /* <Button>Reason</Button> */
-        /* </Card.Actions> */
-        // </Card>
+            </Pressable>
+            {showActions ? (
+                <View style={styles.actionArea}>
+                    <View style={styles.actionsCont}>
+                        <View style={styles.flexRow}>
+                            {item.isPresent ? (
+                                <IconButton
+                                    icon="check"
+                                    color={Colors.green500}
+                                    size={30}
+                                    onPress={(e) => showModal('ATTENDANCE')}
+                                />
+                            ) : (
+                                <>
+                                    <IconButton
+                                        icon="cancel"
+                                        color={Colors.red500}
+                                        size={30}
+                                        onPress={(e) => showModal('ATTENDANCE')}
+                                    />
+                                    <IconButton
+                                        icon="eye"
+                                        color={Colors.red500}
+                                        size={30}
+                                        onPress={(e) =>
+                                            showReason(e, item, 'ATTENDANCE')
+                                        }
+                                    />
+                                </>
+                            )}
+                        </View>
+                        <Text style={styles.actionText}>Attendance</Text>
+                    </View>
+                    <View style={styles.actionsCont}>
+                        <View style={styles.flexRow}>
+                            {item.isHomework ? (
+                                <IconButton
+                                    icon="check"
+                                    color={Colors.green500}
+                                    size={30}
+                                    onPress={(e) => showModal('HOMEWORK')}
+                                />
+                            ) : (
+                                <>
+                                    <IconButton
+                                        icon="cancel"
+                                        color={Colors.red500}
+                                        size={30}
+                                        onPress={(e) => showModal('HOMEWORK')}
+                                    />
+                                    <IconButton
+                                        icon="eye"
+                                        color={Colors.red500}
+                                        size={30}
+                                        onPress={(e) =>
+                                            showReason(e, item, 'HOMEWORK')
+                                        }
+                                    />
+                                </>
+                            )}
+                        </View>
+                        <Text style={styles.actionText}>Homework</Text>
+                    </View>
+                </View>
+            ) : (
+                ''
+            )}
+        </View>
     );
 };
 
