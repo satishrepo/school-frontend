@@ -2,23 +2,38 @@ import React, {useState, useEffect} from 'react';
 import {View, StyleSheet} from 'react-native';
 import {
     withTheme,
-    Modal,
+    // Modal,
     Portal,
     Text,
     Button,
     TextInput,
-    Chip
+    Chip,
+    Colors
 } from 'react-native-paper';
+import Modal from 'react-native-modal';
 
 const styles = StyleSheet.create({
+    modal: {
+        // backgroundColor: Colors.red200,
+        justifyContent: 'flex-end',
+        margin: 0
+    },
+    modalBody: {
+        backgroundColor: Colors.white,
+        // paddingVertical: 10,
+        paddingHorizontal: 10,
+        height: '40%',
+        borderTopLeftRadius: 10,
+        borderTopRightRadius: 10,
+    },
     chipCont: {
         display: 'flex',
         flexDirection: 'row',
         justifyContent: 'flex-start',
-        paddingTop: 10,
-        paddingBottom: 10,
+        backgroundColor: 'white',
         flexWrap: 'wrap',
-        width: '100%'
+        width: '100%',
+        marginVertical: 10
     },
     chip: {
         color: 'green',
@@ -26,7 +41,9 @@ const styles = StyleSheet.create({
     },
     heading: {
         fontWeight: 'bold',
-        fontSize: 18
+        fontSize: 20,
+        width: '100%',
+        marginVertical: 5,
     },
     buttonCont: {
         display: 'flex',
@@ -119,75 +136,92 @@ const ReasonModal = (props) => {
         <View>
             <Portal>
                 <Modal
-                    dismissable={false}
-                    visible={visible}
-                    contentContainerStyle={containerStyle}
+                    // dismissable={false}
+                    isVisible={visible}
+                    // contentContainerStyle={containerStyle}
+                    animationIn="slideInUp"
+                    animationOut="slideOutDown"
+                    coverScreen
+                    hasBackdrop
+                    swipeDirection={['down']}
+                    swipeThreshold={100}
+                    onSwipeComplete={() => cancelModel()}
+                    backdropColor="black"
+                    style={styles.modal}
                 >
-                    <Text style={styles.heading}>{modalData.title}</Text>
+                    <View style={styles.modalBody}>
+                        <View style={[styles.chipCont]}>
+                            <Text style={styles.heading}>
+                                {modalData.title}
+                            </Text>
 
-                    <View style={styles.chipCont}>
-                        {modalData.reasons.map((reasonItem) => (
-                            <Chip
-                                mode="outlined"
-                                style={[styles.chip]}
-                                selected={reasonItem === absentReasonObj.reason}
-                                key={reasonItem}
-                                onPress={() =>
-                                    onChangeReason(reasonItem, 'reason')
-                                }
-                            >
-                                {reasonItem}
-                            </Chip>
-                        ))}
-                    </View>
-                    <TextInput
-                        label="Note"
-                        value={absentReasonObj.note}
-                        multiline
-                        onChangeText={(text) => onChangeReason(text, 'note')}
-                    />
-                    {readOnly ? (
-                        <Button
-                            style={styles.saveButton}
-                            // icon="content-save-outline"
-                            mode="contained"
-                            color={theme.colors.accent}
-                            onPress={cancelModel}
-                        >
-                            Back
-                        </Button>
-                    ) : (
-                        <Text />
-                    )}
-                    {!readOnly ? (
-                        <View style={styles.buttonCont}>
+                            {modalData.reasons.map((reasonItem) => (
+                                <Chip
+                                    mode="outlined"
+                                    style={[styles.chip]}
+                                    selected={
+                                        reasonItem === absentReasonObj.reason
+                                    }
+                                    key={reasonItem}
+                                    onPress={() =>
+                                        onChangeReason(reasonItem, 'reason')
+                                    }
+                                >
+                                    {reasonItem}
+                                </Chip>
+                            ))}
+                        </View>
+                        <TextInput
+                            label="Note"
+                            value={absentReasonObj.note}
+                            multiline
+                            onChangeText={(text) =>
+                                onChangeReason(text, 'note')
+                            }
+                        />
+                        {readOnly ? (
                             <Button
                                 style={styles.saveButton}
                                 // icon="content-save-outline"
                                 mode="contained"
-                                color={theme.colors.gray}
-                                // disabled={!absentReasonObj.reason && !absentReasonObj.note}
+                                color={theme.colors.accent}
                                 onPress={cancelModel}
                             >
-                                Cancel
+                                Back
                             </Button>
-                            <Button
-                                style={styles.saveButton}
-                                // icon="content-save-outline"
-                                mode="contained"
-                                color={theme.colors.primary}
-                                disabled={
-                                    !absentReasonObj.reason &&
-                                    !absentReasonObj.note
-                                }
-                                onPress={saveModalData}
-                            >
-                                Save
-                            </Button>
-                        </View>
-                    ) : (
-                        <Text />
-                    )}
+                        ) : (
+                            <Text />
+                        )}
+                        {!readOnly ? (
+                            <View style={styles.buttonCont}>
+                                <Button
+                                    style={styles.saveButton}
+                                    // icon="content-save-outline"
+                                    mode="contained"
+                                    color={theme.colors.gray}
+                                    // disabled={!absentReasonObj.reason && !absentReasonObj.note}
+                                    onPress={cancelModel}
+                                >
+                                    Cancel
+                                </Button>
+                                <Button
+                                    style={styles.saveButton}
+                                    // icon="content-save-outline"
+                                    mode="contained"
+                                    color={theme.colors.primary}
+                                    disabled={
+                                        !absentReasonObj.reason &&
+                                        !absentReasonObj.note
+                                    }
+                                    onPress={saveModalData}
+                                >
+                                    Save
+                                </Button>
+                            </View>
+                        ) : (
+                            <Text />
+                        )}
+                    </View>
                 </Modal>
             </Portal>
         </View>

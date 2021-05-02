@@ -46,10 +46,10 @@ const styles = StyleSheet.create({
         display: 'flex',
         flexDirection: 'row',
         justifyContent: 'flex-start',
+        backgroundColor: 'white',
         padding: 5,
-        borderRadius: 5,
         margin: 5,
-        backgroundColor: 'white'
+        borderRadius: 5
     },
     avatar: {
         marginRight: 10
@@ -76,8 +76,17 @@ const styles = StyleSheet.create({
         display: 'flex',
         flexDirection: 'row',
         justifyContent: 'space-between',
-        paddingVertical: 2,
-        paddingHorizontal: 10
+        // paddingVertical: 2,
+        paddingBottom: 2,
+        paddingHorizontal: 10,
+        backgroundColor: Colors.white,
+        marginTop: -8,
+        marginBottom: 5,
+        marginHorizontal: 5,
+        borderBottomRightRadius: 10,
+        borderBottomLeftRadius: 10,
+        borderTopColor: Colors.grey100,
+        borderTopWidth: 2
     },
     flexRow: {
         display: 'flex',
@@ -87,7 +96,7 @@ const styles = StyleSheet.create({
     actionText: {
         alignItems: 'center',
         textAlign: 'center',
-        fontSize: 20
+        fontSize: 15
     },
     actionsCont: {
         // marginHorizontal: 15,
@@ -133,19 +142,20 @@ const ListItem = (props) => {
                     <Text style={styles.name}>{toTitleCase(item.name)} </Text>
                     <View style={styles.chipCont}>
                         <Text style={styles.rollNo}>#{item.rollNo}</Text>
-                        <Text>
-                            <Icon
-                                name="users"
-                                size={20}
-                                style={[styles.indicIcon,
-                                    {
-                                        color: item.isPresent
-                                            ? Colors.green500
-                                            : Colors.red500
-                                    }
-                                ]}
-                            />
-                            {/* <Chip
+                        <Icon
+                            name="users"
+                            size={20}
+                            style={[
+                                styles.indicIcon,
+                                {
+                                    color: item.isPresent
+                                        ? Colors.green500
+                                        : Colors.red500
+                                }
+                            ]}
+                        />
+                        {/* <Text> */}
+                        {/* <Chip
                                 disabled={disabled}
                                 icon={item.isPresent ? 'check' : 'cancel'}
                                 style={{backgroundColor: attendanceBackground}}
@@ -154,7 +164,7 @@ const ListItem = (props) => {
                                 {item.isPresent ? 'Present' : 'Absent'}
                             </Chip> */}
 
-                            {/* {!item.isPresent && item.absentReason ? (
+                        {/* {!item.isPresent && item.absentReason ? (
                                 <IconButton
                                     icon="eye"
                                     color={Colors.red500}
@@ -166,24 +176,25 @@ const ListItem = (props) => {
                             ) : (
                                 ''
                             )} */}
-                            {/* <Switch
+                        {/* <Switch
                                 disabled={disabled}
                                 value={item.isPresent}
                                 onValueChange={() => showModal('ATTENDANCE')}
                             /> */}
-                        </Text>
-                        <Text>
-                            <Icon
-                                name="file-text-o"
-                                size={20}
-                                style={[styles.indicIcon,
-                                    {
-                                        color: item.isHomework
-                                            ? Colors.green500
-                                            : Colors.red500
-                                    }
-                                ]}
-                            />
+                        {/* </Text> */}
+                        <Icon
+                            name="file-text-o"
+                            size={20}
+                            style={[
+                                styles.indicIcon,
+                                {
+                                    color: item.isHomework
+                                        ? Colors.green500
+                                        : Colors.red500
+                                }
+                            ]}
+                        />
+                        {/* <Text> */}
                             {/* <Chip
                                 disabled={disabled}
                                 icon={item.isHomework ? 'check' : 'cancel'}
@@ -211,7 +222,7 @@ const ListItem = (props) => {
                                 value={item.isHomework}
                                 onValueChange={() => showModal('HOMEWORK')}
                             /> */}
-                        </Text>
+                        {/* </Text> */}
                     </View>
                 </View>
             </Pressable>
@@ -223,21 +234,21 @@ const ListItem = (props) => {
                                 <IconButton
                                     icon="check"
                                     color={Colors.green500}
-                                    size={30}
-                                    onPress={(e) => showModal('ATTENDANCE')}
+                                    size={25}
+                                    onPress={() => showModal('ATTENDANCE')}
                                 />
                             ) : (
                                 <>
                                     <IconButton
                                         icon="cancel"
                                         color={Colors.red500}
-                                        size={30}
-                                        onPress={(e) => showModal('ATTENDANCE')}
+                                        size={25}
+                                        onPress={() => showModal('ATTENDANCE')}
                                     />
                                     <IconButton
                                         icon="eye"
                                         color={Colors.red500}
-                                        size={30}
+                                        size={25}
                                         onPress={(e) =>
                                             showReason(e, item, 'ATTENDANCE')
                                         }
@@ -253,21 +264,21 @@ const ListItem = (props) => {
                                 <IconButton
                                     icon="check"
                                     color={Colors.green500}
-                                    size={30}
-                                    onPress={(e) => showModal('HOMEWORK')}
+                                    size={25}
+                                    onPress={() => showModal('HOMEWORK')}
                                 />
                             ) : (
                                 <>
                                     <IconButton
                                         icon="cancel"
                                         color={Colors.red500}
-                                        size={30}
-                                        onPress={(e) => showModal('HOMEWORK')}
+                                        size={25}
+                                        onPress={() => showModal('HOMEWORK')}
                                     />
                                     <IconButton
                                         icon="eye"
                                         color={Colors.red500}
-                                        size={30}
+                                        size={25}
                                         onPress={(e) =>
                                             showReason(e, item, 'HOMEWORK')
                                         }
@@ -279,7 +290,7 @@ const ListItem = (props) => {
                     </View>
                 </View>
             ) : (
-                ''
+                <></>
             )}
         </View>
     );
