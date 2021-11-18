@@ -10,6 +10,7 @@ import {store, persistor} from './app/store/configureStore';
 
 import NavConfig from './app/navigation';
 
+
 const theme = {
     ...DefaultTheme,
     roundness: 2,

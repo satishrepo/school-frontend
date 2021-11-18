@@ -28,3 +28,12 @@ export const get = async (key) => {
         console.log('Asyn Storage fetch error: ', e);
     }
 };
+
+export const remove = async (key) => {
+    try {
+        await AsyncStorage.removeItem(key);
+        return true;
+    } catch (e) {
+        console.log('Asyn Storage fetch error: ', e);
+    }
+};

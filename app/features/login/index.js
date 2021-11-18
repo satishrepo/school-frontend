@@ -11,12 +11,17 @@ const Login = (props) => {
     // because redirection happend on navigation level
     useEffect(() => {
         if (loginResponse && loginResponse.status) {
-            navigation.dispatch(
-                CommonActions.reset({
-                    index: 0,
-                    routes: [{name: 'Class'}]
-                })
-            );
+            // navigation.dispatch(
+            //     CommonActions.reset({
+            //         index: 0,
+            //         routes: [{name: 'Home'}]
+            //     })
+            // );
+            // navigation.reset({
+            //     index: 0,
+            //     routes: [{ name: 'Home' }],
+            // });
+            navigation.navigate('Tabs', {screen: 'Home'});
         }
     }, [loginResponse]);
 

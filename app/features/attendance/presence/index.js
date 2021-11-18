@@ -216,7 +216,7 @@ const Attendance = (props) => {
         setStudentData(sData);
     };
 
-    const showReaonModal = (item, index, type) => {
+    const showReasonModal = (item, index, type) => {
         switch (type) {
             case 'ATTENDANCE':
                 markAttendance(item, index);
@@ -264,7 +264,7 @@ const Attendance = (props) => {
         return (
             <ListItem
                 item={item}
-                onPress={showReaonModal}
+                onPress={showReasonModal}
                 backgroundColor={backgroundColor}
                 showReason={showReason}
                 disabled={readOnly}

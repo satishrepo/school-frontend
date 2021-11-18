@@ -2,16 +2,20 @@ import React, {useState, useEffect} from 'react';
 // import { StyleSheet, View } from 'react-native';
 import {useSelector} from 'react-redux';
 
-import {NavigationContainer} from '@react-navigation/native';
+import {NavigationContainer, DrawerActions} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
 // import {BottomNavigation} from 'react-native-paper';
 import {createMaterialBottomTabNavigator} from '@react-navigation/material-bottom-tabs';
 import {MaterialCommunityIcons} from '@expo/vector-icons';
-// import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
-// import { createDrawerNavigator } from '@react-navigation/drawer';
-// const Drawer = createDrawerNavigator();
 
-import {save, get} from '../services/storage';
+import {
+    createDrawerNavigator,
+    DrawerContentScrollView,
+    DrawerItemList,
+    DrawerItem
+} from '@react-navigation/drawer';
+
+import * as storageSerivce from '../services/storage';
 
 import Home from '../features/home';
 import Login from '../store/login/container';
@@ -21,6 +25,7 @@ import Time from '../store/attendance/containers/time';
 import Class from '../store/attendance/containers/class';
 import Presence from '../store/attendance/containers/presence';
 import RecentAttendance from '../store/attendance/containers/recentAttendance';
+import DrawerContent from '../components/drawerContent';
 
 const Tab = createMaterialBottomTabNavigator();
 const HomeStack = createStackNavigator();
@@ -66,17 +71,71 @@ const AttendanceStackScreen = () => {
 
 const AuthStackScreen = () => {
     return (
-        <NavigationContainer>
-            <AuthStack.Navigator>
-                <AuthStack.Screen
-                    name="Login"
-                    component={Login}
-                    options={{title: 'Login'}}
-                />
-            </AuthStack.Navigator>
-        </NavigationContainer>
+        <AuthStack.Navigator>
+            <AuthStack.Screen
+                name="Login"
+                component={Login}
+                options={{title: 'Login'}}
+            />
+        </AuthStack.Navigator>
     );
 };
+
+const Drawer = createDrawerNavigator();
+
+const DrawerStackScreen = () => (
+    <Drawer.Navigator drawerContent={props => <DrawerContent {...props} />}>
+        <Drawer.Screen name="Tabs" component={TabStackScreen} />
+        <Drawer.Screen name="AuthStack" component={AuthStackScreen} />
+    </Drawer.Navigator>
+);
+
+const TabStackScreen = () => (
+    <Tab.Navigator>
+        <Tab.Screen
+            name="Home"
+            component={HomeStackScreen}
+            options={{
+                tabBarLabel: 'Home',
+                tabBarIcon: ({color}) => (
+                    <MaterialCommunityIcons
+                        name="home"
+                        color={color}
+                        size={26}
+                    />
+                )
+            }}
+        />
+        <Tab.Screen
+            name="Attendance"
+            component={AttendanceStackScreen}
+            options={{
+                tabBarLabel: 'Attendance',
+                tabBarIcon: ({color}) => (
+                    <MaterialCommunityIcons
+                        name="account-group"
+                        color={color}
+                        size={26}
+                    />
+                )
+            }}
+        />
+        <Tab.Screen
+            name="Profile"
+            component={Profile}
+            options={{
+                tabBarLabel: 'Profile',
+                tabBarIcon: ({color}) => (
+                    <MaterialCommunityIcons
+                        name="account"
+                        color={color}
+                        size={26}
+                    />
+                )
+            }}
+        />
+    </Tab.Navigator>
+);
 
 const NavConfig = () => {
     const loggedUser = useSelector((state) => state.loginReducer.loggedUser);
@@ -84,69 +143,25 @@ const NavConfig = () => {
 
     useEffect(() => {
         (async () => {
-            const user = await get('loggedUser');
+            const user = await storageSerivce.get('loggedUser');
             setSavedUser(user);
+            return user;
         })();
     }, []);
 
     useEffect(() => {
         if (loggedUser && loggedUser.user_id) {
-            save('loggedUser', loggedUser);
-            save('authToken', loggedUser.token);
+            storageSerivce.save('loggedUser', loggedUser);
+            storageSerivce.save('authToken', loggedUser.token);
         }
     }, [loggedUser]);
 
     const isLoggedIn = !!(savedUser || (loggedUser && loggedUser.user_id));
 
-    return isLoggedIn ? (
+    return (
         <NavigationContainer>
-            <Tab.Navigator>
-                <Tab.Screen
-                    name="Home"
-                    component={HomeStackScreen}
-                    options={{
-                        tabBarLabel: 'Home',
-                        tabBarIcon: ({color}) => (
-                            <MaterialCommunityIcons
-                                name="home"
-                                color={color}
-                                size={26}
-                            />
-                        )
-                    }}
-                />
-                <Tab.Screen
-                    name="Attendance"
-                    component={AttendanceStackScreen}
-                    options={{
-                        tabBarLabel: 'Attendance',
-                        tabBarIcon: ({color}) => (
-                            <MaterialCommunityIcons
-                                name="account-group"
-                                color={color}
-                                size={26}
-                            />
-                        )
-                    }}
-                />
-                <Tab.Screen
-                    name="Profile"
-                    component={Profile}
-                    options={{
-                        tabBarLabel: 'Profile',
-                        tabBarIcon: ({color}) => (
-                            <MaterialCommunityIcons
-                                name="account"
-                                color={color}
-                                size={26}
-                            />
-                        )
-                    }}
-                />
-            </Tab.Navigator>
+            {isLoggedIn ? DrawerStackScreen() : AuthStackScreen()}
         </NavigationContainer>
-    ) : (
-        AuthStackScreen()
     );
 };
 
